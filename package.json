@@ -1,0 +1,33 @@
+{
+  "name": "@sangre-fp/content-editor",
+  "version": "1.0.0",
+  "main": "dist/index.umd.js",
+  "module": "dist/index.modern.mjs",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@sangre-fp/connectors": "1.1.0",
+    "@sangre-fp/i18n": "1.0.5",
+    "@sangre-fp/ui": "1.0.3",
+    "formik": "^2.1.3",
+    "lodash-es": "^4.17.15",
+    "prop-types": "^15.7.2",
+    "react-quill": "^1.3.3",
+    "react-select": "^1.2.1",
+    "react-sortable-hoc": "^1.10.1",
+    "styled-components": "^4.4.1"
+  },
+  "peerDependencies": {
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
+  },
+  "scripts": {
+    "build": "microbundle --jsx React.createElement --entry src/index.js --format modern,umd",
+    "start": "microbundle --jsx React.createElement --entry src/index.js --watch --format modern,umd",
+    "get-version": "echo $npm_package_version",
+    "format": "prettier --write 'src/**/*.js'"
+  },
+  "devDependencies": {
+    "microbundle": "^0.12.0-next.7",
+    "prettier": "^1.19.1"
+  }
+}
