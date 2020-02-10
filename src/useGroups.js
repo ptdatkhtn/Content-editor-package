@@ -15,7 +15,7 @@ const hasPublicEditorRole = group =>
 
 export const useGroups = () => {
   const [groups, setGroups] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const handleFetch = async () => {

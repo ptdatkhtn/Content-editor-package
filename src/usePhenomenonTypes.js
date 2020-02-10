@@ -4,7 +4,7 @@ import { keyBy } from "lodash-es";
 
 export const usePhenomenonTypes = () => {
   const [phenomenonTypes, setPhenomenonTypes] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const handleFetch = async () => {
@@ -37,4 +37,3 @@ export const PhenomenonTypeLoader = ({ children }) => {
 
   return children(loader);
 };
-

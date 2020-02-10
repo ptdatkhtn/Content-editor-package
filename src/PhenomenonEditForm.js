@@ -95,14 +95,12 @@ export const PhenomenonEditForm = ({
 }) => {
   const {
     phenomenonTypes,
-    phenomenonTypesById,
     loading: loadingPhenomenonTypes,
     error: errorPhenomenonTypes
   } = usePhenomenonTypes();
 
   const {
     groups,
-    canEditPublic,
     loading: loadingGroups,
     error: errorGroups
   } = useEditableGroups();
@@ -128,19 +126,22 @@ export const PhenomenonEditForm = ({
     return <div className="py-5 text-center text-danger">{error.message}</div>;
   }
 
+  const initialState = getValue("state", phenomenonTypes[0]);
+  const initialType = find(
+    phenomenonTypes,
+    type => type.id === initialState.id
+  );
+
   return (
     <Formik
       initialValues={{
         uuid: getValue("uuid"),
-        language: getValue(
-          "language",
-          radar ? radar.radarLanguage : getLanguage()
-        ),
-        group: radar ? radar.group : getValue("group"),
+        language: getValue("language", radar ? radar.language : getLanguage()),
+        group: radar ? radar.groupId : getValue("group"),
         title: getValue("title", ""),
         shortTitle: getValue("shortTitle", ""),
         lead: getValue("lead", ""),
-        state: getType(getValue("state", phenomenonTypes[0])),
+        state: initialType || phenomenonTypes[0],
         video: getValue("videoUrl", ""),
         image: null,
         imageUrl: getValue("imageUrl"),
@@ -160,7 +161,6 @@ export const PhenomenonEditForm = ({
         }
 
         if (values.group === null) {
-          console.log("here", values.group, values);
           errors.group = requestTranslation("fieldMissing");
         }
 
@@ -284,6 +284,14 @@ export const PhenomenonEditForm = ({
         };
 
         const group = groups.find(group => group.id === values.group);
+
+        if (values.uuid && !group) {
+          return (
+            <div className="text-center text-danger py-5">
+              You do not have the permission to ${values.uuid ? 'edit this' : 'add a'} phenomenon.
+            </div>
+          );
+        }
 
         return (
           <div>
@@ -412,12 +420,17 @@ export const PhenomenonEditForm = ({
                 </div>
                 <div className="form-group">
                   <h4>{requestTranslation("createPhenomenaFormLeadLabel")}</h4>
-                  <Textarea
-                    type="text"
-                    name="lead"
+                  <ReactQuill
+                    className="fp-wysiwyg"
+                    style={{
+                      height: "250px",
+                      paddingBottom: "42px"
+                    }}
+                    modules={quillModules}
+                    formats={quillFormats}
                     value={values.lead}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
+                    onChange={value => setFieldValue("lead", value)}
+                    onBlur={() => setFieldTouched("lead")}
                   />
                 </div>
               </div>
@@ -560,7 +573,6 @@ export const PhenomenonEditForm = ({
                       <PhenomenaSelector
                         small
                         phenomena={values.uuid ? [phenomenon] : []}
-                        phenomenaTypesById={phenomenonTypesById}
                         listView={!radar}
                         selectedPhenomena={values.relatedPhenomena}
                         language={values.language}
@@ -627,27 +639,24 @@ export const PhenomenonEditForm = ({
                   )}
                 </div>
               )}
-
-              {canEditPublic && (
-                <div className="modal-form-section">
-                  <h3>{requestTranslation("feed")}</h3>
-                  <Select
-                    name="feed"
-                    value={values.feedTag}
-                    labelKey="title"
-                    valueKey="id"
-                    onChange={value => setFieldValue("feedTag", value)}
-                    options={feedTags}
-                    multi={true}
-                  />
-                </div>
-              )}
+              <div className="modal-form-section">
+                <h3>{requestTranslation("feed")}</h3>
+                <Select
+                  name="feed"
+                  value={values.feedTag}
+                  labelKey="title"
+                  valueKey="id"
+                  onChange={value => setFieldValue("feedTag", value)}
+                  options={feedTags}
+                  multi={true}
+                />
+              </div>
             </div>
 
             <ButtonsContainer
               className={"modal-form-section modal-form-actions"}
             >
-              {values.uuid && (values.group !== 0 || canEditPublic) && !radar && (
+              {!radar && values.uuid && (
                 <Fragment>
                   <button
                     className="btn btn-lg btn-plain-red"
@@ -786,8 +795,8 @@ PhenomenonEditForm.propTypes = {
   phenomenon: PropTypes.object,
   radar: PropTypes.shape({
     id: PropTypes.string.isRequired,
-    group: PropTypes.number.isRequired,
-    radarLanguage: PropTypes.string.isRequired
+    groupId: PropTypes.number.isRequired,
+    language: PropTypes.string.isRequired
   }),
   onDelete: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,

@@ -7,6 +7,7 @@ import { getAvailableLanguages, requestTranslation } from "@sangre-fp/i18n";
 import { getPhenomena } from "@sangre-fp/connectors/search-api";
 import { CreateButton, SearchInput } from "@sangre-fp/ui";
 import { filter, map } from "lodash-es";
+import { usePhenomenonTypes } from "./usePhenomenonTypes";
 
 export const ALL_GROUP_VALUE = -1;
 
@@ -22,7 +23,9 @@ const getPhenomenonUrl = (radarId = false, phenomenon, hideEdit = false) => {
   }
 
   // eslint-disable-next-line
-  return `${process.env.REACT_APP_PUBLIC_URL}/node/${radarId}?issue=${uuid}&map_id=${radarId}&source_position=right&source_page=radar-view${
+  return `${
+    process.env.REACT_APP_PUBLIC_URL
+  }/node/${radarId}?issue=${uuid}&map_id=${radarId}&source_position=right&source_page=radar-view${
     groupUrl.length ? `&${groupUrl}` : ""
   }${hideEdit ? "&hideEdit=true" : ""}`;
 };
@@ -88,7 +91,7 @@ class PhenomenonRow extends PureComponent {
   }
 }
 
-export default class PhenomenaSelector extends PureComponent {
+class PhenomenaSelectorLegacy extends PureComponent {
   state = {
     textSearchValue: "",
     page: 0,
@@ -391,6 +394,27 @@ export default class PhenomenaSelector extends PureComponent {
     );
   }
 }
+
+const PhenomenaSelector = props => {
+  const { phenomenonTypesById, loading, error } = usePhenomenonTypes();
+
+  if (loading) {
+    return <div className="py-5">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="py-5">{error.message}</div>;
+  }
+
+  return (
+    <PhenomenaSelectorLegacy
+      {...props}
+      phenomenaTypesById={phenomenonTypesById}
+    />
+  );
+};
+
+export default PhenomenaSelector;
 
 const Loading = styled.div`
   width: 100%;
