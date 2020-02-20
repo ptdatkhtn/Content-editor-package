@@ -102,7 +102,8 @@ export const PhenomenonEditForm = ({
   const {
     groups,
     loading: loadingGroups,
-    error: errorGroups
+    error: errorGroups,
+    canEditPublic
   } = useEditableGroups();
 
   const {
@@ -639,18 +640,22 @@ export const PhenomenonEditForm = ({
                   )}
                 </div>
               )}
-              <div className="modal-form-section">
-                <h3>{requestTranslation("feed")}</h3>
-                <Select
-                  name="feed"
-                  value={values.feedTag}
-                  labelKey="title"
-                  valueKey="id"
-                  onChange={value => setFieldValue("feedTag", value)}
-                  options={feedTags}
-                  multi={true}
-                />
-              </div>
+              {canEditPublic && (
+                <>
+                  <div className="modal-form-section">
+                    <h3>{requestTranslation("feed")}</h3>
+                    <Select
+                      name="feed"
+                      value={values.feedTag}
+                      labelKey="title"
+                      valueKey="id"
+                      onChange={value => setFieldValue("feedTag", value)}
+                      options={feedTags}
+                      multi={true}
+                    />
+                  </div>
+                </>
+              )}
             </div>
 
             <ButtonsContainer
