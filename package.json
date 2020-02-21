@@ -5,7 +5,7 @@
   "module": "dist/index.modern.mjs",
   "license": "UNLICENSED",
   "dependencies": {
-    "@sangre-fp/connectors": "1.1.0",
+    "@sangre-fp/connectors": "1.1.1",
     "@sangre-fp/i18n": "1.0.7",
     "@sangre-fp/ui": "1.0.3",
     "formik": "^2.1.3",
