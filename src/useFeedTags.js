@@ -1,28 +1,28 @@
-import { useState, useEffect } from "react";
-import drupalApi from "@sangre-fp/connectors/drupal-api";
-import { usePhenomenonTypes } from "./usePhenomenonTypes";
+import { useState, useEffect } from 'react'
+import drupalApi from '@sangre-fp/connectors/drupal-api'
+import { usePhenomenonTypes } from './usePhenomenonTypes'
 
 export const useFeedTags = () => {
-  const [feedTags, setFeedTags] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [feedTags, setFeedTags] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
 
   const handleFetch = async () => {
-    setLoading(true);
-    setError(null);
+    setLoading(true)
+    setError(null)
 
     try {
-      setFeedTags(await drupalApi.getRssFeedTags());
+      setFeedTags(await drupalApi.getRssFeedTags())
     } catch (e) {
-      setError(e);
+      setError(e)
     }
 
     setLoading(false);
-  };
+  }
 
   useEffect(() => {
-    handleFetch();
-  }, []);
+    handleFetch()
+  }, [])
 
   return {
     feedTags,
@@ -32,7 +32,7 @@ export const useFeedTags = () => {
 };
 
 export const FeedTagsLoader = ({ children }) => {
-  const loader = useFeedTags();
+  const loader = useFeedTags()
 
-  return children(loader);
+  return children(loader)
 };

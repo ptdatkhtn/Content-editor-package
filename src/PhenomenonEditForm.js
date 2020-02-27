@@ -1,15 +1,16 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState } from 'react'
 import {
   requestTranslation,
   getAvailableLanguages,
   getLanguage
-} from "@sangre-fp/i18n";
-import { Formik } from "formik";
-import { map, differenceBy, find } from "lodash-es";
-import Select from "react-select";
-import styled from "styled-components";
-import { SortableContainer, SortableElement } from "react-sortable-hoc";
-import PhenomenaSelector from "./PhenomenaSelector";
+} from '@sangre-fp/i18n'
+import { Formik } from 'formik'
+import { map, differenceBy, find } from 'lodash-es'
+import Select from 'react-select'
+import styled from 'styled-components'
+import { SortableContainer, SortableElement } from 'react-sortable-hoc'
+import PhenomenaSelector from './PhenomenaSelector'
+import PhenomenaTimingEditor from './PhenomenaTimingEditor'
 import {
   paddingModalStyles,
   Input,
@@ -22,27 +23,27 @@ import {
   Radiobox,
   quillFormats,
   quillModules
-} from "@sangre-fp/ui";
-import PropTypes from "prop-types";
-import ReactQuill from "react-quill";
+} from '@sangre-fp/ui'
+import PropTypes from 'prop-types'
+import ReactQuill from 'react-quill'
 
-import { usePhenomenonTypes } from "./usePhenomenonTypes";
-import { useEditableGroups } from "./useGroups";
-import { useFeedTags } from "./useFeedTags";
+import { usePhenomenonTypes } from './usePhenomenonTypes'
+import { useEditableGroups } from './useGroups'
+import { useFeedTags } from './useFeedTags'
 
 const makeGetValue = phenomenon => (field, defaultValue = null) =>
-  (phenomenon && phenomenon[field]) ?? defaultValue;
+  (phenomenon && phenomenon[field]) ?? defaultValue
 
 const getType = type =>
   type && {
     id: type.id,
     title: type.title,
     issue_state: type.issue_state
-  };
+  }
 
 const SortableRelatedPhenomena = SortableElement(
   ({ relatedPhenom, onSelect }) => {
-    const { title } = relatedPhenom;
+    const { title } = relatedPhenom
 
     return (
       <li
@@ -55,8 +56,8 @@ const SortableRelatedPhenomena = SortableElement(
         <p className="mb-0">{title}</p>
         <button
           onClick={e => {
-            e.preventDefault();
-            onSelect(relatedPhenom);
+            e.preventDefault()
+            onSelect(relatedPhenom)
           }}
           className="ml-auto material-icons"
           style={{ color: "#006998", flexShrink: 0 }}
@@ -64,9 +65,9 @@ const SortableRelatedPhenomena = SortableElement(
           cancel
         </button>
       </li>
-    );
+    )
   }
-);
+)
 
 const SortableRelatedPhenomenaList = SortableContainer(
   ({ relatedPhenomena, onSelect }) => {
@@ -81,9 +82,9 @@ const SortableRelatedPhenomenaList = SortableContainer(
           />
         ))}
       </ul>
-    );
+    )
   }
-);
+)
 
 export const PhenomenonEditForm = ({
   phenomenon,
@@ -97,41 +98,40 @@ export const PhenomenonEditForm = ({
     phenomenonTypes,
     loading: loadingPhenomenonTypes,
     error: errorPhenomenonTypes
-  } = usePhenomenonTypes();
+  } = usePhenomenonTypes()
 
   const {
     groups,
     loading: loadingGroups,
     error: errorGroups,
     canEditPublic
-  } = useEditableGroups();
+  } = useEditableGroups()
 
   const {
     feedTags,
     loading: loadingFeedTags,
     error: errorFeedTags
-  } = useFeedTags();
+  } = useFeedTags()
 
-  const getValue = makeGetValue(phenomenon);
+  const getValue = makeGetValue(phenomenon)
+  const [deletingModalOpen, setDeletingModalOpen] = useState(false)
 
-  const [deletingModalOpen, setDeletingModalOpen] = useState(false);
-
-  const loading = loadingFeedTags || loadingPhenomenonTypes || loadingGroups;
-  const error = errorFeedTags || errorPhenomenonTypes || errorGroups;
+  const loading = loadingFeedTags || loadingPhenomenonTypes || loadingGroups
+  const error = errorFeedTags || errorPhenomenonTypes || errorGroups
 
   if (loading) {
-    return <div className="py-5 text-center">Loading...</div>;
+    return <div className="py-5 text-center">Loading...</div>
   }
 
   if (error) {
-    return <div className="py-5 text-center text-danger">{error.message}</div>;
+    return <div className="py-5 text-center text-danger">{error.message}</div>
   }
 
-  const initialState = getValue("state", phenomenonTypes[0]);
+  const initialState = getValue("state", phenomenonTypes[0])
   const initialType = find(
     phenomenonTypes,
     type => type.id === initialState.id
-  );
+  )
 
   return (
     <Formik
@@ -152,43 +152,44 @@ export const PhenomenonEditForm = ({
         relatedPhenomena: getValue("relatedPhenomena", []),
         newsFeeds: getValue("newsFeeds", []),
         newsFeedInput: "",
-        feedTag: getValue("feedTag", [])
+        feedTag: getValue("feedTag", []),
+        timing: getValue("timing", { min: new Date().getFullYear() + 3, max: new Date().getFullYear() + 8 })
       }}
       validate={values => {
-        const errors = {};
+        const errors = {}
 
         if (!values.language) {
-          errors.language = requestTranslation("fieldMissing");
+          errors.language = requestTranslation("fieldMissing")
         }
 
         if (values.group === null) {
-          errors.group = requestTranslation("fieldMissing");
+          errors.group = requestTranslation("fieldMissing")
         }
 
         if (!values.title) {
-          errors.title = requestTranslation("fieldMissing");
+          errors.title = requestTranslation("fieldMissing")
         }
 
         if (
           values.newsFeedInput.length &&
           !/^((https):\/\/)/.test(values.newsFeedInput)
         ) {
-          errors.newsFeedInput = requestTranslation("newsFeedError");
+          errors.newsFeedInput = requestTranslation("newsFeedError")
         }
 
-        return errors;
+        return errors
       }}
       onSubmit={async (values, { setSubmitting }) => {
         try {
-          const originalNewsFeeds = getValue("newsFeeds", []);
+          const originalNewsFeeds = getValue("newsFeeds", [])
           const addedNewsFeeds = differenceBy(
             values.newsFeeds,
             originalNewsFeeds
-          );
+          )
           const deletedNewsFeeds = differenceBy(
             originalNewsFeeds,
             values.newsFeeds
-          );
+          )
 
           const phenomenonInput = {
             ...values,
@@ -196,14 +197,14 @@ export const PhenomenonEditForm = ({
               values.relatedPhenomena,
               ({ uuid, title }) => ({ uuid, title })
             )
-          };
+          }
 
-          await onSubmit(phenomenonInput, { addedNewsFeeds, deletedNewsFeeds });
+          await onSubmit(phenomenonInput, { addedNewsFeeds, deletedNewsFeeds })
         } catch (error) {
-          alert(error.message);
+          alert(error.message)
         }
 
-        setSubmitting(false);
+        setSubmitting(false)
       }}
     >
       {({
@@ -223,10 +224,10 @@ export const PhenomenonEditForm = ({
             setFieldValue("newsFeeds", [
               ...values.newsFeeds,
               { title: values.newsFeedInput }
-            ]);
-            setFieldValue("newsFeedInput", "");
+            ])
+            setFieldValue("newsFeedInput", "")
           }
-        };
+        }
 
         const setState = ({
           target: {
@@ -236,13 +237,13 @@ export const PhenomenonEditForm = ({
           setFieldValue(
             "state",
             getType(find(phenomenonTypes, t => t.id === value))
-          );
-        };
+          )
+        }
 
         const toggleRelatedPhenomenon = phenomenon => {
           const exists = values.relatedPhenomena.find(
             relatedPhenomenon => phenomenon.uuid === relatedPhenomenon.uuid
-          );
+          )
           setFieldValue(
             "relatedPhenomena",
             exists
@@ -251,47 +252,47 @@ export const PhenomenonEditForm = ({
                     phenomenon.uuid !== relatedPhenomenon.uuid
                 )
               : values.relatedPhenomena.concat([phenomenon])
-          );
-        };
+          )
+        }
 
         const setRelatedPhenomenaSort = ({ newIndex, oldIndex }) => {
-          const ordered = values.relatedPhenomena.slice();
-          ordered.splice(newIndex, 0, ordered.splice(oldIndex, 1)[0]);
-          setFieldValue("relatedPhenomena", ordered);
-        };
+          const ordered = values.relatedPhenomena.slice()
+          ordered.splice(newIndex, 0, ordered.splice(oldIndex, 1)[0])
+          setFieldValue("relatedPhenomena", ordered)
+        }
 
         const removeNewsFeed = newsFeed => {
           setFieldValue(
             "newsFeeds",
             values.newsFeeds.filter(({ title }) => title !== newsFeed.title)
-          );
-        };
+          )
+        }
 
         const handleImageSelect = (e, file) => {
-          const fileName = file || e.target.files[0];
-          const reader = new FileReader();
+          const fileName = file || e.target.files[0]
+          const reader = new FileReader()
 
           reader.onload = () => {
-            let img = new Image();
-            img.src = URL.createObjectURL(fileName);
+            let img = new Image()
+            img.src = URL.createObjectURL(fileName)
 
             img.onload = () => {
-              setFieldValue("image", reader.result);
-              setFieldValue("imageFile", fileName);
-            };
-          };
+              setFieldValue("image", reader.result)
+              setFieldValue("imageFile", fileName)
+            }
+          }
 
-          reader.readAsDataURL(fileName);
-        };
+          reader.readAsDataURL(fileName)
+        }
 
-        const group = groups.find(group => group.id === values.group);
+        const group = groups.find(group => group.id === values.group)
 
         if (values.uuid && !group) {
           return (
             <div className="text-center text-danger py-5">
               You do not have the permission to ${values.uuid ? 'edit this' : 'add a'} phenomenon.
             </div>
-          );
+          )
         }
 
         return (
@@ -318,8 +319,8 @@ export const PhenomenonEditForm = ({
                           className="fp-radar-select fp-radar-select--no-margin"
                           value={values.language}
                           onChange={({ value }) => {
-                            setFieldValue("language", value);
-                            setFieldValue("relatedPhenomena", []);
+                            setFieldValue("language", value)
+                            setFieldValue("relatedPhenomena", [])
                           }}
                           options={getAvailableLanguages()}
                           searchable={false}
@@ -346,7 +347,7 @@ export const PhenomenonEditForm = ({
                           valueKey="id"
                           onBlur={() => setFieldTouched("group")}
                           onChange={group => {
-                            setFieldValue("group", group ? group.id : null);
+                            setFieldValue("group", group ? group.id : null)
                           }}
                           options={groups}
                           searchable={false}
@@ -449,11 +450,19 @@ export const PhenomenonEditForm = ({
                       value={phenomenonType.id}
                       checked={values.state.id === phenomenonType.id}
                       onClick={setState}
+                      className='phenomena-radiobox'
                     />
                   </StateContainer>
                 ))}
               </div>
-
+              <div className="modal-form-section">
+                <h3>{requestTranslation('timing')}</h3>
+                <div>{requestTranslation('estimatedTimeRange')} <b>{values.timing.min}-{values.timing.max}</b></div>
+                <PhenomenaTimingEditor
+                  updateTiming={value => setFieldValue("timing", value)}
+                  timing={values.timing}
+                />
+              </div>
               <div className="modal-form-section">
                 <h3>{requestTranslation("media")}</h3>
                 <div className="form-group">
@@ -492,9 +501,9 @@ export const PhenomenonEditForm = ({
                         />
                         <RadarImageCloseContainer
                           onClick={() => {
-                            setFieldValue("image", null);
-                            setFieldValue("imageFile", null);
-                            setFieldValue("imageUrl", null);
+                            setFieldValue("image", null)
+                            setFieldValue("imageFile", null)
+                            setFieldValue("imageUrl", null)
                           }}
                         >
                           <RadarImageClose className="material-icons">
@@ -715,11 +724,11 @@ export const PhenomenonEditForm = ({
               </button>
             </ButtonsContainer>
           </div>
-        );
+        )
       }}
     </Formik>
-  );
-};
+  )
+}
 
 const Textarea = styled.textarea`
   font-size: 16px;
@@ -735,11 +744,13 @@ const StateContainer = styled.div`
 `;
 
 const PhenomenaState = styled.div`
-  margin-right: 10px;
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-`;
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    position: absolute;
+    z-index: 10;
+    left: 76px;
+`
 
 const RadarImageCloseContainer = styled.div`
   position: absolute;
@@ -806,4 +817,4 @@ PhenomenonEditForm.propTypes = {
   onDelete: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired
-};
+}
