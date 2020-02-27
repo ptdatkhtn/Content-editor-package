@@ -1,25 +1,25 @@
-import _ from "lodash";
-import React, { PureComponent, Fragment } from "react";
-import styled from "styled-components";
-import Select from "react-select";
-import { Radiobox } from "@sangre-fp/ui";
-import { getAvailableLanguages, requestTranslation } from "@sangre-fp/i18n";
-import { getPhenomena } from "@sangre-fp/connectors/search-api";
-import { CreateButton, SearchInput } from "@sangre-fp/ui";
-import { filter, map } from "lodash-es";
-import { usePhenomenonTypes } from "./usePhenomenonTypes";
+import _ from "lodash"
+import React, { PureComponent, Fragment } from "react"
+import styled from "styled-components"
+import Select from "react-select"
+import { Radiobox } from "@sangre-fp/ui"
+import { getAvailableLanguages, requestTranslation } from "@sangre-fp/i18n"
+import { getPhenomena } from "@sangre-fp/connectors/search-api"
+import { CreateButton, SearchInput } from "@sangre-fp/ui"
+import { filter, map } from "lodash-es"
+import { usePhenomenonTypes } from "./usePhenomenonTypes"
 
-export const ALL_GROUP_VALUE = -1;
+export const ALL_GROUP_VALUE = -1
 
 const getPhenomenonUrl = (radarId = false, phenomenon, hideEdit = false) => {
-  const { group, uuid } = phenomenon;
-  const hasGroup = phenomenon.hasOwnProperty("group");
-  const groupUrl = hasGroup ? `group=${group}` : "";
+  const { group, uuid } = phenomenon
+  const hasGroup = phenomenon.hasOwnProperty("group")
+  const groupUrl = hasGroup ? `group=${group}` : ""
 
   if (!radarId) {
     return `${process.env.REACT_APP_PUBLIC_URL}/fp-phenomena/${uuid}${
       groupUrl.length ? `/?${groupUrl}` : ""
-    }`;
+    }`
   }
 
   // eslint-disable-next-line
@@ -27,22 +27,22 @@ const getPhenomenonUrl = (radarId = false, phenomenon, hideEdit = false) => {
     process.env.REACT_APP_PUBLIC_URL
   }/node/${radarId}?issue=${uuid}&map_id=${radarId}&source_position=right&source_page=radar-view${
     groupUrl.length ? `&${groupUrl}` : ""
-  }${hideEdit ? "&hideEdit=true" : ""}`;
-};
+  }${hideEdit ? "&hideEdit=true" : ""}`
+}
 
 export const radarLanguagesWithAll = () => [
   { value: "all", label: requestTranslation("all") },
   ...getAvailableLanguages()
-];
+]
 
-const checkedStyle = { backgroundColor: "rgb(241, 244, 246)" };
-const PAGE_SIZE = 25;
+const checkedStyle = { backgroundColor: "rgb(241, 244, 246)" }
+const PAGE_SIZE = 25
 
 class PhenomenonRow extends PureComponent {
   handleClick = () => {
-    const { phenomenon, onSelect } = this.props;
-    onSelect(phenomenon);
-  };
+    const { phenomenon, onSelect } = this.props
+    onSelect(phenomenon)
+  }
 
   render() {
     const {
@@ -52,12 +52,12 @@ class PhenomenonRow extends PureComponent {
       small,
       listView,
       phenomenaTypesById
-    } = this.props;
-    const { title, shortTitle, state, halo, uuid } = phenomenon;
-    const href = getPhenomenonUrl(listView ? false : radarId, phenomenon, true);
+    } = this.props
+    const { title, shortTitle, state, halo, uuid, timing = {} } = phenomenon
+    const href = getPhenomenonUrl(listView ? false : radarId, phenomenon, true)
     const type = phenomenaTypesById[state.id]
       ? phenomenaTypesById[state.id].alias
-      : "undefined";
+      : "undefined"
 
     return (
       <PhenomenaRow
@@ -74,6 +74,11 @@ class PhenomenonRow extends PureComponent {
             checked={checked}
             phenomenaState={{ halo, type }}
           />
+            <div className='d-flex flex-column ml-auto' style={{ width: '30%' }}>
+              <div>{timing.min}-{timing.max}</div>
+              <div style={{ fontSize: '11px' }}>Crowd-sourced: 2028.63</div>
+            <div/>
+          </div>
         </PhenomenaRowContent>
         <PhenomenaRowControls>
           <button
@@ -87,7 +92,7 @@ class PhenomenonRow extends PureComponent {
           </button>
         </PhenomenaRowControls>
       </PhenomenaRow>
-    );
+    )
   }
 }
 
@@ -102,8 +107,8 @@ class PhenomenaSelectorLegacy extends PureComponent {
       value: this.props.language || "all"
     }),
     selectedGroupId: ALL_GROUP_VALUE
-  };
-  debounceTimeout = false;
+  }
+  debounceTimeout = false
 
   handleLanguageChange = language => {
     this.setState(
@@ -114,8 +119,8 @@ class PhenomenaSelectorLegacy extends PureComponent {
         totalPages: 0
       },
       this.fetchPhenomenaList
-    );
-  };
+    )
+  }
 
   handleGroupChange = selectedGroup =>
     this.setState(
@@ -126,19 +131,19 @@ class PhenomenaSelectorLegacy extends PureComponent {
         totalPages: 0
       },
       this.fetchPhenomenaList
-    );
+    )
 
   handleScroll = e => {
-    const { page, totalPages, loading } = this.state;
+    const { page, totalPages, loading } = this.state
     const bottom =
-      e.target.scrollHeight - e.target.scrollTop - 25 < e.target.clientHeight;
+      e.target.scrollHeight - e.target.scrollTop - 25 < e.target.clientHeight
 
     if (bottom && !loading && page < totalPages) {
       this.setState({ page: page + 1 }, () => {
-        this.fetchPhenomenaList();
-      });
+        this.fetchPhenomenaList()
+      })
     }
-  };
+  }
 
   handleTextSearchChange = ({ target }) =>
     this.setState(
@@ -149,10 +154,10 @@ class PhenomenaSelectorLegacy extends PureComponent {
         totalPages: 0
       },
       this.fetchPhenomenaList
-    );
+    )
 
   componentDidMount() {
-    this.fetchPhenomenaList();
+    this.fetchPhenomenaList()
   }
 
   /*
@@ -160,11 +165,11 @@ class PhenomenaSelectorLegacy extends PureComponent {
    */
   componentDidUpdate(prevProps) {
     if (!_.isEqual(prevProps.group, this.props.group)) {
-      this.resetPhenomenaList();
+      this.resetPhenomenaList()
     }
 
     if (!_.isEqual(prevProps.language, this.props.language)) {
-      this.handleLanguageChange({ value: this.props.language });
+      this.handleLanguageChange({ value: this.props.language })
     }
   }
 
@@ -180,8 +185,8 @@ class PhenomenaSelectorLegacy extends PureComponent {
         totalPages: 0
       },
       this.fetchPhenomenaList
-    );
-  };
+    )
+  }
 
   fetchPhenomenaList = () => {
     const {
@@ -190,17 +195,17 @@ class PhenomenaSelectorLegacy extends PureComponent {
       selectedGroupId,
       textSearchValue,
       page
-    } = this.state;
+    } = this.state
 
-    const { group } = this.props;
+    const { group } = this.props
 
-    const groupId = group ? group.id : 0;
+    const groupId = group ? group.id : 0
     const searchGroups =
-      selectedGroupId === ALL_GROUP_VALUE || selectedGroupId === 0 ? [0] : [];
+      selectedGroupId === ALL_GROUP_VALUE || selectedGroupId === 0 ? [0] : []
     if (selectedGroupId === ALL_GROUP_VALUE && groupId) {
-      searchGroups.push(groupId);
+      searchGroups.push(groupId)
     } else if (selectedGroupId > 0) {
-      searchGroups.push(selectedGroupId);
+      searchGroups.push(selectedGroupId)
     }
 
     this.setState({ loading: true }, () => {
@@ -213,25 +218,25 @@ class PhenomenaSelectorLegacy extends PureComponent {
         true
       )
         .then(data => {
-          const newList = _.uniqBy([...phenomenaList, ...data.result], "uuid");
+          const newList = _.uniqBy([...phenomenaList, ...data.result], "uuid")
 
           this.setState({
             loading: false,
             phenomenaList: newList,
             totalPages: data.page.totalPages
-          });
+          })
         })
         .catch(() => {
-          this.setState({ loading: false });
-        });
-    });
-  };
+          this.setState({ loading: false })
+        })
+    })
+  }
 
   isChecked({ uuid }) {
-    const { selectedPhenomena } = this.props;
+    const { selectedPhenomena } = this.props
 
     if (!selectedPhenomena) {
-      return false;
+      return false
     }
 
     if (_.isArray(selectedPhenomena)) {
@@ -241,10 +246,10 @@ class PhenomenaSelectorLegacy extends PureComponent {
           selectedPhenomena,
           p => p.uuid.toLowerCase() === uuid.toLowerCase()
         )
-      );
+      )
     }
 
-    return uuid.toLowerCase() === selectedPhenomena.uuid.toLowerCase();
+    return uuid.toLowerCase() === selectedPhenomena.uuid.toLowerCase()
   }
 
   renderSearchResults = () => {
@@ -254,18 +259,18 @@ class PhenomenaSelectorLegacy extends PureComponent {
       listView,
       phenomenaTypesById,
       phenomena: excludedPhenomena
-    } = this.props;
-    const { phenomenaList } = this.state;
+    } = this.props
+    const { phenomenaList } = this.state
 
-    const excludedPhenomenonUuids = map(excludedPhenomena, p => p.uuid);
+    const excludedPhenomenonUuids = map(excludedPhenomena, p => p.uuid)
     const filteredList = filter(
       phenomenaList,
       p => !excludedPhenomenonUuids.includes(p.uuid)
-    );
+    )
 
     if (filteredList.length) {
       return filteredList.map(phenomenon => {
-        const { uuid } = phenomenon;
+        const { uuid } = phenomenon
 
         return (
           <PhenomenonRow
@@ -278,23 +283,23 @@ class PhenomenaSelectorLegacy extends PureComponent {
             checked={this.isChecked(phenomenon)}
             radarId={radarId}
           />
-        );
-      });
+        )
+      })
     }
 
-    return <p className="ml-4 mt-2 description">No Results found</p>;
-  };
+    return <p className="ml-4 mt-2 description">No Results found</p>
+  }
 
   render() {
-    const { onCreate, small, filter, group } = this.props;
-    const { textSearchValue, loading, language, selectedGroupId } = this.state;
-    const searchStyle = onCreate ? { marginRight: "0", marginTop: "0" } : null;
+    const { onCreate, small, filter, group } = this.props
+    const { textSearchValue, loading, language, selectedGroupId } = this.state
+    const searchStyle = onCreate ? { marginRight: "0", marginTop: "0" } : null
     const groups = [
       { value: -1, label: requestTranslation("all") },
       { value: 0, label: requestTranslation("publicWord") }
-    ];
+    ]
     if (group) {
-      groups.push({ value: group.id, label: group.title });
+      groups.push({ value: group.id, label: group.title })
     }
 
     return (
@@ -320,7 +325,7 @@ class PhenomenaSelectorLegacy extends PureComponent {
             <Fragment>
               <div className={"filter-col"}>
                 <div key={"language-filter"} className={"language-filter"}>
-                  <LanguageSelect>
+                  <div>
                     <h5 className={"dropdown-filter-title"}>
                       {requestTranslation("group")}
                     </h5>
@@ -333,12 +338,12 @@ class PhenomenaSelectorLegacy extends PureComponent {
                       searchable={false}
                       clearable={false}
                     />
-                  </LanguageSelect>
+                  </div>
                 </div>
               </div>
               <div className={"filter-col"}>
                 <div key={"language-filter"} className={"language-filter"}>
-                  <LanguageSelect>
+                  <div>
                     <h5 className={"dropdown-filter-title"}>
                       {requestTranslation("language")}
                     </h5>
@@ -351,7 +356,7 @@ class PhenomenaSelectorLegacy extends PureComponent {
                       searchable={false}
                       clearable={false}
                     />
-                  </LanguageSelect>
+                  </div>
                 </div>
               </div>
             </Fragment>
@@ -391,19 +396,19 @@ class PhenomenaSelectorLegacy extends PureComponent {
           ) : null}
         </SearchResultsList>
       </Fragment>
-    );
+    )
   }
 }
 
 const PhenomenaSelector = props => {
-  const { phenomenonTypesById, loading, error } = usePhenomenonTypes();
+  const { phenomenonTypesById, loading, error } = usePhenomenonTypes()
 
   if (loading) {
-    return <div className="py-5">Loading...</div>;
+    return <div className="py-5">Loading...</div>
   }
 
   if (error) {
-    return <div className="py-5">{error.message}</div>;
+    return <div className="py-5">{error.message}</div>
   }
 
   return (
@@ -411,10 +416,10 @@ const PhenomenaSelector = props => {
       {...props}
       phenomenaTypesById={phenomenonTypesById}
     />
-  );
-};
+  )
+}
 
-export default PhenomenaSelector;
+export default PhenomenaSelector
 
 const Loading = styled.div`
   width: 100%;
@@ -427,8 +432,6 @@ const Loading = styled.div`
   left: 0;
   flex-direction: column;
 `;
-
-const LanguageSelect = styled.div``;
 
 const SearchRow = styled.div`
   display: flex;
