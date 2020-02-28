@@ -11,6 +11,7 @@ import styled from 'styled-components'
 import { SortableContainer, SortableElement } from 'react-sortable-hoc'
 import PhenomenaSelector from './PhenomenaSelector'
 import PhenomenaTimingEditor from './PhenomenaTimingEditor'
+import PhenomenaLinks from './PhenomenaLinks'
 import {
   paddingModalStyles,
   Input,
@@ -153,7 +154,8 @@ export const PhenomenonEditForm = ({
         newsFeeds: getValue("newsFeeds", []),
         newsFeedInput: "",
         feedTag: getValue("feedTag", []),
-        timing: getValue("timing", { min: new Date().getFullYear() + 3, max: new Date().getFullYear() + 8 })
+        timing: getValue("timing", { min: new Date().getFullYear() + 3, max: new Date().getFullYear() + 8 }),
+        links: getValue("links", "")
       }}
       validate={values => {
         const errors = {}
@@ -542,7 +544,14 @@ export const PhenomenonEditForm = ({
                   </p>
                 </div>
               </div>
-
+                <div className="modal-form-section">
+                    <h3>
+                        {requestTranslation("PhenomenaLinks")}
+                    </h3>
+                    <div className="form-group">
+                        <PhenomenaLinks/>
+                    </div>
+                </div>
               <div className="modal-form-section">
                 <h3>
                   {requestTranslation("createPhenomenaFormMainContentLabel")}
