@@ -6,7 +6,7 @@ export default class PhenomenaLinks extends Component {
     state = { values: [{ value: null }] };
 
     handleChange(i, event) {
-        let values = [...this.state.values];
+        const values = [...this.state.values];
         values[i].value = event.target.value;
         this.setState({ values });
     }

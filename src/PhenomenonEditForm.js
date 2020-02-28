@@ -31,6 +31,7 @@ import ReactQuill from 'react-quill'
 import { usePhenomenonTypes } from './usePhenomenonTypes'
 import { useEditableGroups } from './useGroups'
 import { useFeedTags } from './useFeedTags'
+import linkVal from "@sangre-fp/reducers/radarSets";
 
 const makeGetValue = phenomenon => (field, defaultValue = null) =>
   (phenomenon && phenomenon[field]) ?? defaultValue
@@ -155,7 +156,7 @@ export const PhenomenonEditForm = ({
         newsFeedInput: "",
         feedTag: getValue("feedTag", []),
         timing: getValue("timing", { min: new Date().getFullYear() + 3, max: new Date().getFullYear() + 8 }),
-        links: getValue("links", "")
+        links: getValue("links",[linkVal.value])
       }}
       validate={values => {
         const errors = {}
