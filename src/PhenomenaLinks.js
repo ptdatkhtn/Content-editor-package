@@ -2,14 +2,15 @@ import React, {useCallback} from 'react'
 import {requestTranslation} from '@sangre-fp/i18n'
 
 
-const PhenomenaLinks = ({values,onChange}) => {
+const PhenomenaLinks = ({values, onChange}) => {
+
     const handleChange = useCallback((index, event) => {
         onChange(values.map((prevValue, i) =>
             i === index
                 ? {...prevValue, value: event.target.value}
                 : prevValue
         ))
-    },[values, onChange]);
+    }, [values, onChange]);
 
     const addMore = useCallback(() => {
         onChange(
@@ -35,9 +36,8 @@ const PhenomenaLinks = ({values,onChange}) => {
                            value={linkVal.value || ""}
                            onChange={e => handleChange(i, e)}
                     />
-                    <span className="af-custom-close"
+                    <span className="btn-round btn-sm af-custom-close"
                           style={{
-                              color: '#006998',
                               position: 'relative',
                               display: 'inline-block',
                               left: '101%',
