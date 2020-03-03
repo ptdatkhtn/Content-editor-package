@@ -48,7 +48,7 @@ const PhenomenaLinks = ({values, onChange}) => {
                 </div>
             ))}
 
-            <input className="btn btn-plain"
+            <input className="btn btn-sm btn-plain"
                    style={{
                        position: 'relative',
                        display: 'inline-block'
