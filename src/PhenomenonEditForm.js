@@ -179,6 +179,12 @@ export const PhenomenonEditForm = ({
                 ) {
                     errors.newsFeedInput = requestTranslation("newsFeedError")
                 }
+                if (
+                    values.links.length &&
+                    !/^((http|https):\/\/)?www\.([A-z]+)\.([A-z]{2,})/.test(values.links)
+                ) {
+                    errors.links = requestTranslation("linksError")
+                }
 
                 return errors
             }}
