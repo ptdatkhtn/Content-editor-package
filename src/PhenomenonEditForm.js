@@ -309,15 +309,44 @@ export const PhenomenonEditForm = ({
                         <div className="modal-form-sections">
                             <div className="modal-form-section modal-form-header">
                                 <h2>{requestTranslation("createPhenomenaFormTitle")}</h2>
-                            </div>
-
-                            <div className="modal-form-section">
-                                <h3>
-                                    {requestTranslation("createPhenomenaFormLanguageLabel")}
-                                </h3>
                                 <p>
                                     {requestTranslation("createPhenomenaFormLanguageDescription")}
                                 </p>
+                            </div>
+
+                            <div className="modal-form-section" style={{display: "flex"}}>
+                                {!radar && !values.uuid && (
+                                    <div className="form-group">
+                                        <h4>{requestTranslation("group")}</h4>
+                                        <div className="row">
+                                            <div className="col-6"
+                                                 style={{
+                                                     paddingRight: "12rem"
+                                                 }}
+                                            >
+                                                <Select
+                                                    name="group"
+                                                    className="fp-radar-select fp-radar-select--no-margin"
+                                                    value={values.group}
+                                                    valueKey="id"
+                                                    onBlur={() => setFieldTouched("group")}
+                                                    onChange={group => {
+                                                        setFieldValue("group", group ? group.id : null)
+                                                    }}
+                                                    options={groups}
+                                                    searchable={false}
+                                                    clearable={false}
+                                                />
+                                                {touched.group && errors.group && (
+                                                    <div className="description text-danger">
+                                                        {errors.group}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
                                 {!values.uuid && (
                                     <div className="form-group">
                                         <h4>{requestTranslation("language")}</h4>
@@ -344,33 +373,28 @@ export const PhenomenonEditForm = ({
                                         </div>
                                     </div>
                                 )}
-                                {!radar && !values.uuid && (
-                                    <div className="form-group">
-                                        <h4>{requestTranslation("group")}</h4>
-                                        <div className="row">
-                                            <div className="col-6">
-                                                <Select
-                                                    name="group"
-                                                    className="fp-radar-select fp-radar-select--no-margin"
-                                                    value={values.group}
-                                                    valueKey="id"
-                                                    onBlur={() => setFieldTouched("group")}
-                                                    onChange={group => {
-                                                        setFieldValue("group", group ? group.id : null)
-                                                    }}
-                                                    options={groups}
-                                                    searchable={false}
-                                                    clearable={false}
-                                                />
-                                                {touched.group && errors.group && (
-                                                    <div className="description text-danger">
-                                                        {errors.group}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
+
+
+                            </div>
+                            <div className="modal-form-section">
+                                <h3>{requestTranslation("createPhenomenaFormTypeLabel")}</h3>
+
+                                    {map(phenomenonTypes, phenomenonType => (
+                                    <StateContainer key={phenomenonType.id}>
+                                        <PhenomenaState>
+                                            <PhenomenonType type={phenomenonType.alias} size={15}/>
+                                        </PhenomenaState>
+                                        <Radiobox
+                                            name="type"
+                                            label={requestTranslation(phenomenonType.alias)}
+                                            value={phenomenonType.id}
+                                            checked={values.state.id === phenomenonType.id}
+                                            onClick={setState}
+                                            className='phenomena-radiobox'
+                                        />
+                                    </StateContainer>
+                                ))}
+
                             </div>
 
                             <div className="modal-form-section">
@@ -443,132 +467,12 @@ export const PhenomenonEditForm = ({
                                         onChange={value => setFieldValue("lead", value)}
                                         onBlur={() => setFieldTouched("lead")}
                                     />
-                                </div>
-                            </div>
-
-                            <div className="modal-form-section">
-                                <h3>{requestTranslation("createPhenomenaFormTypeLabel")}</h3>
-                                {map(phenomenonTypes, phenomenonType => (
-                                    <StateContainer key={phenomenonType.id}>
-                                        <PhenomenaState>
-                                            <PhenomenonType type={phenomenonType.alias} size={15}/>
-                                        </PhenomenaState>
-                                        <Radiobox
-                                            name="type"
-                                            label={requestTranslation(phenomenonType.alias)}
-                                            value={phenomenonType.id}
-                                            checked={values.state.id === phenomenonType.id}
-                                            onClick={setState}
-                                            className='phenomena-radiobox'
-                                        />
-                                    </StateContainer>
-                                ))}
-                            </div>
-                            <div className="modal-form-section">
-                                <h3>{requestTranslation('timing')}</h3>
-                                <div>{requestTranslation('estimatedTimeRange')}
-                                    <b>{values.timing.min}-{values.timing.max}</b></div>
-                                <PhenomenaTimingEditor
-                                    updateTiming={value => setFieldValue("timing", value)}
-                                    timing={values.timing}
-                                />
-                            </div>
-                            <div className="modal-form-section">
-                                <h3>{requestTranslation("media")}</h3>
-                                <div className="form-group">
-                                    <h4>{requestTranslation("video")}</h4>
-                                    <Input
-                                        name="video"
-                                        type="text"
-                                        value={values.video}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                    />
-                                    <p className={"description"}>
-                                        {requestTranslation("videoFormatsText")}
-                                    </p>
-                                    <p className={"description"}>
-                                        {requestTranslation("youtubeFormat")}
-                                        <br/>
-                                        {requestTranslation("vimeoFormat")}
-                                    </p>
-                                </div>
-                                <div className="form-group">
-                                    <h4>{requestTranslation("image")}</h4>
-                                    <SelectImageContainer>
-                                        {!values.imageUrl &&
-                                        !values.image &&
-                                        requestTranslation("noImageSelected")}
-                                        {(values.imageUrl || values.image) && (
-                                            <div
-                                                className="position-relative w-100"
-                                                style={{backgroundColor: "rgba(0,0,0, 0.1)"}}
-                                            >
-                                                <img
-                                                    alt=""
-                                                    className="img-fluid"
-                                                    src={values.image || values.imageUrl}
-                                                />
-                                                <RadarImageCloseContainer
-                                                    onClick={() => {
-                                                        setFieldValue("image", null)
-                                                        setFieldValue("imageFile", null)
-                                                        setFieldValue("imageUrl", null)
-                                                    }}
-                                                >
-                                                    <RadarImageClose className="material-icons">
-                                                        close
-                                                    </RadarImageClose>
-                                                </RadarImageCloseContainer>
-                                            </div>
+                                    <p>
+                                        {requestTranslation(
+                                            "createPhenomenaFormLeadLabelDescription"
                                         )}
-                                        <SelectImageInputContainer>
-                                            <SelectImageInput
-                                                type="file"
-                                                accept="image/*"
-                                                onChange={handleImageSelect}
-                                                placeholder={requestTranslation("select")}
-                                            />
-                                            <SelectImageButton className="btn btn-sm btn-outline-secondary">
-                                                {requestTranslation("select")}
-                                            </SelectImageButton>
-                                        </SelectImageInputContainer>
-                                    </SelectImageContainer>
-                                    <p className={"description"}>
-                                        {requestTranslation("imageUploadDescription")}
                                     </p>
                                 </div>
-                                <div className="form-group">
-                                    <h4>{requestTranslation("createPhenomenaFormVideoLabel")}</h4>
-                                    <Input
-                                        type={"text"}
-                                        name="videoText"
-                                        value={values.videoText}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                    />
-                                    <p className={"description"}>
-                                        {requestTranslation("createPhenomenaFormVideoDescription")}
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="modal-form-section">
-                                <button className="dropdown-fp dropdown-toggle" type="button" data-toggle="collapse"
-                                        data-target="#collapselinks"
-                                        aria-expanded="true"
-                                        style={{
-                                            position: "absolute",
-                                            left: "93%"
-                                        }}>
-                                </button>
-                                <h3>{requestTranslation("PhenomenaLinks")}</h3>
-                                <div id="collapselinks"  className="collapse">
-                                    <PhenomenaLinks
-                                        onChange={value => setFieldValue("links", value)}
-                                        values={values.links}/>
-                                </div>
-                            </div>
-                            <div className="modal-form-section">
                                 <h3>
                                     {requestTranslation("createPhenomenaFormMainContentLabel")}
                                 </h3>
@@ -589,104 +493,251 @@ export const PhenomenonEditForm = ({
                             </div>
 
                             <div className="modal-form-section">
-                                <div style={{overflow: "hidden"}} className="row">
-                                    <div className="col-12 col-md-4">
-                                        <h3>{requestTranslation("relatedPhenomena")}</h3>
-                                        {values.relatedPhenomena.length > 0 && (
-                                            <SortableRelatedPhenomenaList
-                                                relatedPhenomena={values.relatedPhenomena}
-                                                onSelect={toggleRelatedPhenomenon}
-                                                onSortEnd={setRelatedPhenomenaSort}
-                                            />
-                                        )}
+                                <h3>{requestTranslation('timing')}</h3>
+                                <div>{requestTranslation('estimatedTimeRange')}
+                                    <b>{values.timing.min}-{values.timing.max}</b></div>
+                                <PhenomenaTimingEditor
+                                    updateTiming={value => setFieldValue("timing", value)}
+                                    timing={values.timing}
+                                />
+                            </div>
+                            <div className="modal-form-section">
+                                <button className="dropdown-fp dropdown-toggle" type="button" data-toggle="collapse"
+                                        data-target="#collapsemedia"
+                                        aria-expanded="true"
+                                        style={{
+                                            position: "absolute",
+                                            left: "93%"
+                                        }}>
+                                </button>
+                                <h3>{requestTranslation("media")}</h3>
+                                <div id="collapsemedia" className="collapse">
+                                    <h4>{requestTranslation("video")}</h4>
+                                    <Input
+                                        name="video"
+                                        type="text"
+                                        value={values.video}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                    />
+                                    <p className={"description"}>
+                                        {requestTranslation("videoFormatsText")}
+                                    </p>
+                                    <p className={"description"}>
+                                        {requestTranslation("youtubeFormat")}
+                                        <br/>
+                                        {requestTranslation("vimeoFormat")}
+                                    </p>
+
+                                    <div className="form-group">
+                                        <h4>{requestTranslation("image")}</h4>
+                                        <SelectImageContainer>
+                                            {!values.imageUrl &&
+                                            !values.image &&
+                                            requestTranslation("noImageSelected")}
+                                            {(values.imageUrl || values.image) && (
+                                                <div
+                                                    className="position-relative w-100"
+                                                    style={{backgroundColor: "rgba(0,0,0, 0.1)"}}
+                                                >
+                                                    <img
+                                                        alt=""
+                                                        className="img-fluid"
+                                                        src={values.image || values.imageUrl}
+                                                    />
+                                                    <RadarImageCloseContainer
+                                                        onClick={() => {
+                                                            setFieldValue("image", null)
+                                                            setFieldValue("imageFile", null)
+                                                            setFieldValue("imageUrl", null)
+                                                        }}
+                                                    >
+                                                        <RadarImageClose className="material-icons">
+                                                            close
+                                                        </RadarImageClose>
+                                                    </RadarImageCloseContainer>
+                                                </div>
+                                            )}
+                                            <SelectImageInputContainer>
+                                                <SelectImageInput
+                                                    type="file"
+                                                    accept="image/*"
+                                                    onChange={handleImageSelect}
+                                                    placeholder={requestTranslation("select")}
+                                                />
+                                                <SelectImageButton className="btn btn-sm btn-outline-secondary">
+                                                    {requestTranslation("select")}
+                                                </SelectImageButton>
+                                            </SelectImageInputContainer>
+                                        </SelectImageContainer>
                                         <p className={"description"}>
-                                            {requestTranslation("relatedPhenomenaText")}
+                                            {requestTranslation("imageUploadDescription")}
                                         </p>
                                     </div>
-                                    <div className="col-12 col-md-8" style={{padding: 0}}>
-                                        <RelatedPhenomena>
-                                            <PhenomenaSelector
-                                                small
-                                                phenomena={values.uuid ? [phenomenon] : []}
-                                                listView={!radar}
-                                                selectedPhenomena={values.relatedPhenomena}
-                                                language={values.language}
-                                                radarId={radar && radar.id}
-                                                onSelect={toggleRelatedPhenomenon}
-                                                filter={false}
-                                                group={values.group}
-                                            />
-                                        </RelatedPhenomena>
+
+                                    <div className="form-group">
+                                        <h4>{requestTranslation("createPhenomenaFormVideoLabel")}</h4>
+                                        <Input
+                                            type={"text"}
+                                            name="videoText"
+                                            value={values.videoText}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                        />
+                                        <p className={"description"}>
+                                            {requestTranslation("createPhenomenaFormVideoDescription")}
+                                        </p>
                                     </div>
+                                </div>
+                            </div>
+                            <div className="modal-form-section">
+                                <button className="dropdown-fp dropdown-toggle" type="button" data-toggle="collapse"
+                                        data-target="#collapselinks"
+                                        aria-expanded="true"
+                                        style={{
+                                            position: "absolute",
+                                            left: "93%"
+                                        }}>
+                                </button>
+                                <h3>{requestTranslation("PhenomenaLinks")}</h3>
+                                <div id="collapselinks" className="collapse">
+                                    <PhenomenaLinks
+                                        onChange={value => setFieldValue("links", value)}
+                                        values={values.links}/>
                                 </div>
                             </div>
                             {values.group !== 0 && (
                                 <div className="modal-form-section">
+                                    <button className="dropdown-fp dropdown-toggle" type="button" data-toggle="collapse"
+                                            data-target="#collapsenews"
+                                            aria-expanded="true"
+                                            style={{
+                                                position: "absolute",
+                                                left: "93%"
+                                            }}>
+                                    </button>
                                     <h3>{requestTranslation("newsFeed")}</h3>
-                                    <p>{requestTranslation("feedDescription")}</p>
-                                    <h4 className={"mb-2"}>{requestTranslation("feedUrl")}</h4>
-                                    <div className="form-row align-items-center">
-                                        <div className="col-6 my-1">
-                                            <Input
-                                                className="mb-0"
-                                                name="newsFeedInput"
-                                                type={"text"}
-                                                value={values.newsFeedInput}
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                            />
-                                        </div>
-                                        <div className={"col-auto my-1"}>
-                                            <button
-                                                onClick={addNewsFeed}
-                                                disabled={!!errors.newsFeedInput}
-                                                className="btn btn-outline-secondary"
-                                            >
-                                                {requestTranslation("addFeed").toUpperCase()}
-                                            </button>
-                                        </div>
-                                        {touched.newsFeedInput && errors.newsFeedInput && (
-                                            <div className={"col-6"}>
-                                                <div className="invalid-feedback d-flex">
-                                                    {errors.newsFeedInput}
-                                                </div>
+                                    <div id="collapsenews" className="collapse">
+                                        <p>{requestTranslation("feedDescription")}</p>
+                                        <h4 className={"mb-2"}>{requestTranslation("feedUrl")}</h4>
+                                        <div className="form-row align-items-center">
+                                            <div className="col-6 my-1">
+                                                <Input
+                                                    className="mb-0"
+                                                    name="newsFeedInput"
+                                                    type={"text"}
+                                                    value={values.newsFeedInput}
+                                                    onChange={handleChange}
+                                                    onBlur={handleBlur}
+                                                />
                                             </div>
+                                            <div className={"col-auto my-1"}>
+                                                <button
+                                                    onClick={addNewsFeed}
+                                                    disabled={!!errors.newsFeedInput}
+                                                    className="btn btn-outline-secondary"
+                                                >
+                                                    {requestTranslation("addFeed").toUpperCase()}
+                                                </button>
+                                            </div>
+                                            {touched.newsFeedInput && errors.newsFeedInput && (
+                                                <div className={"col-6"}>
+                                                    <div className="invalid-feedback d-flex">
+                                                        {errors.newsFeedInput}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                        <h4 className={"mb-2"}>{requestTranslation("addedFeeds")}</h4>
+                                        {values.newsFeeds.length > 0 &&
+                                        map(values.newsFeeds, (newsFeed, index) => (
+                                            <div key={newsFeed.title + index} className="d-flex mb-1">
+                                                <DeleteRowButton
+                                                    onClick={() => removeNewsFeed(newsFeed)}
+                                                >
+                                                    <CloseIcon className="material-icons">
+                                                        close
+                                                    </CloseIcon>
+                                                </DeleteRowButton>
+                                                <p className="mb-0">{newsFeed.title}</p>
+                                            </div>
+                                        ))}
+                                        {values.newsFeeds.length === 0 && (
+                                            <p className="description">
+                                                {requestTranslation("noFeeds")}
+                                            </p>
                                         )}
                                     </div>
-                                    <h4 className={"mb-2"}>{requestTranslation("addedFeeds")}</h4>
-                                    {values.newsFeeds.length > 0 &&
-                                    map(values.newsFeeds, (newsFeed, index) => (
-                                        <div key={newsFeed.title + index} className="d-flex mb-1">
-                                            <DeleteRowButton
-                                                onClick={() => removeNewsFeed(newsFeed)}
-                                            >
-                                                <CloseIcon className="material-icons">
-                                                    close
-                                                </CloseIcon>
-                                            </DeleteRowButton>
-                                            <p className="mb-0">{newsFeed.title}</p>
-                                        </div>
-                                    ))}
-                                    {values.newsFeeds.length === 0 && (
-                                        <p className="description">
-                                            {requestTranslation("noFeeds")}
-                                        </p>
-                                    )}
                                 </div>
+
                             )}
+
+                            <div className="modal-form-section">
+                                <button className="dropdown-fp dropdown-toggle" type="button" data-toggle="collapse"
+                                        data-target="#collapserelated"
+                                        aria-expanded="true"
+                                        style={{
+                                            position: "absolute",
+                                            left: "93%"
+                                        }}>
+                                </button>
+                                <h3>{requestTranslation("relatedPhenomena")}</h3>
+                                <div id="collapserelated" className="collapse">
+                                    <div style={{overflow: "hidden"}} className="row">
+                                        <div className="col-12 col-md-4">
+                                            {values.relatedPhenomena.length > 0 && (
+                                                <SortableRelatedPhenomenaList
+                                                    relatedPhenomena={values.relatedPhenomena}
+                                                    onSelect={toggleRelatedPhenomenon}
+                                                    onSortEnd={setRelatedPhenomenaSort}
+                                                />
+                                            )}
+                                            <p className={"description"}>
+                                                {requestTranslation("relatedPhenomenaText")}
+                                            </p>
+                                        </div>
+                                        <div className="col-12 col-md-8" style={{padding: 0}}>
+                                            <RelatedPhenomena>
+                                                <PhenomenaSelector
+                                                    small
+                                                    phenomena={values.uuid ? [phenomenon] : []}
+                                                    listView={!radar}
+                                                    selectedPhenomena={values.relatedPhenomena}
+                                                    language={values.language}
+                                                    radarId={radar && radar.id}
+                                                    onSelect={toggleRelatedPhenomenon}
+                                                    filter={false}
+                                                    group={values.group}
+                                                />
+                                            </RelatedPhenomena>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             {canEditPublic && (
                                 <>
                                     <div className="modal-form-section">
+                                        <button className="dropdown-fp dropdown-toggle" type="button"
+                                                data-toggle="collapse"
+                                                data-target="#collapsetags"
+                                                aria-expanded="true"
+                                                style={{
+                                                    position: "absolute",
+                                                    left: "93%"
+                                                }}>
+                                        </button>
                                         <h3>{requestTranslation("feed")}</h3>
-                                        <Select
-                                            name="feed"
-                                            value={values.feedTag}
-                                            labelKey="title"
-                                            valueKey="id"
-                                            onChange={value => setFieldValue("feedTag", value)}
-                                            options={feedTags}
-                                            multi={true}
-                                        />
+                                        <div id="collapsetags" className="collapse">
+                                            <Select
+                                                name="feed"
+                                                value={values.feedTag}
+                                                labelKey="title"
+                                                valueKey="id"
+                                                onChange={value => setFieldValue("feedTag", value)}
+                                                options={feedTags}
+                                                multi={true}
+                                            />
+                                        </div>
                                     </div>
                                 </>
                             )}
