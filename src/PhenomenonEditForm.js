@@ -553,10 +553,16 @@ export const PhenomenonEditForm = ({
                                 </div>
                             </div>
                             <div className="modal-form-section">
-                                <h3>
-                                    {requestTranslation("PhenomenaLinks")}
-                                </h3>
-                                <div className="form-group">
+                                <button className="dropdown-fp dropdown-toggle" type="button" data-toggle="collapse"
+                                        data-target="#collapselinks"
+                                        aria-expanded="true"
+                                        style={{
+                                            position: "absolute",
+                                            left: "93%"
+                                        }}>
+                                </button>
+                                <h3>{requestTranslation("PhenomenaLinks")}</h3>
+                                <div id="collapselinks"  className="collapse">
                                     <PhenomenaLinks
                                         onChange={value => setFieldValue("links", value)}
                                         values={values.links}/>
