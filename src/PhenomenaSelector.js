@@ -5,6 +5,7 @@ import Select from "react-select"
 import { Radiobox } from "@sangre-fp/ui"
 import { getAvailableLanguages, requestTranslation } from "@sangre-fp/i18n"
 import { getPhenomena } from "@sangre-fp/connectors/search-api"
+import statisticsApi from '@sangre-fp/connectors/statistics-api'
 import { CreateButton, SearchInput } from "@sangre-fp/ui"
 import { filter, map } from "lodash-es"
 import { usePhenomenonTypes } from "./usePhenomenonTypes"
@@ -53,7 +54,8 @@ class PhenomenonRow extends PureComponent {
       listView,
       phenomenaTypesById
     } = this.props
-    const { title, shortTitle, state, halo, uuid, timing = {} } = phenomenon
+    const { title, shortTitle, state, halo, uuid, timing = {}, crowdSourcedValue } = phenomenon
+
     const href = getPhenomenonUrl(listView ? false : radarId, phenomenon, true)
     const type = phenomenaTypesById[state.id]
       ? phenomenaTypesById[state.id].alias
@@ -76,7 +78,7 @@ class PhenomenonRow extends PureComponent {
           />
             <div className='d-flex flex-column ml-auto' style={{ width: '30%' }}>
               <div>{timing.min}-{timing.max}</div>
-              <div style={{ fontSize: '11px' }}>Crowd-sourced: 2028.63</div>
+              <div style={{ fontSize: '11px' }}>{requestTranslation('crowdSourced')} {crowdSourcedValue ? crowdSourcedValue : '-'}</div>
             <div/>
           </div>
         </PhenomenaRowContent>
@@ -175,7 +177,7 @@ class PhenomenaSelectorLegacy extends PureComponent {
 
   /*
    * This is in a separate function to avoid React error about invoking setState in componentDidUpdate,
-   * which is only way proper way to detect change in group prop and reset phenomena list
+   * which is only proper way to detect change in group prop and reset phenomena list
    */
   resetPhenomenaList = () => {
     this.setState(
@@ -187,6 +189,21 @@ class PhenomenaSelectorLegacy extends PureComponent {
       this.fetchPhenomenaList
     )
   }
+
+  matchPhenomenaWithStatistics = (phenomena, statistics) => {
+    const { phenomenaList } = this.state
+
+      const newFilteredPhenomena = _.uniqBy([...phenomena.filter(({ archived }) => !archived)], 'uuid')
+
+      const newPhenomena = _.map(newFilteredPhenomena, item => ({
+        ...item,
+        crowdSourcedValue: statistics[item.uuid] ?
+            _.round(statistics[item.uuid].year_median, 2) : null
+      }))
+
+      return _.uniqBy([...phenomenaList, ...newPhenomena], 'uuid')
+  }
+
 
   fetchPhenomenaList = () => {
     const {
@@ -218,17 +235,27 @@ class PhenomenaSelectorLegacy extends PureComponent {
         true
       )
         .then(data => {
-          const newList = _.uniqBy([...phenomenaList, ...data.result], "uuid")
+          const uuidList = data.result ? data.result.map(({ uuid }) => uuid) : []
 
-          this.setState({
-            loading: false,
-            phenomenaList: newList,
-            totalPages: data.page.totalPages
-          })
+          if (uuidList.length) {
+            statisticsApi.getPhenomenaStatistics(uuidList.join(','))
+              .then(statisticsData => {
+                  this.setState({
+                    loading: false,
+                    totalPages: data.page.totalPages,
+                    phenomenaList: this.matchPhenomenaWithStatistics(data.result, statisticsData.data)
+                  })
+              })
+              .catch(err => this.setState({ loading: false }))
+          } else {
+            this.setState({
+              loading: false,
+              phenomenaList: [],
+              totalPages: data.page.totalPages
+            })
+          }
         })
-        .catch(() => {
-          this.setState({ loading: false })
-        })
+        .catch(() => this.setState({ loading: false }))
     })
   }
 
@@ -240,11 +267,12 @@ class PhenomenaSelectorLegacy extends PureComponent {
     }
 
     if (_.isArray(selectedPhenomena)) {
+
       return (
         selectedPhenomena.length > 0 &&
         _.find(
           selectedPhenomena,
-          p => p.uuid.toLowerCase() === uuid.toLowerCase()
+          p => p.uuid === uuid
         )
       )
     }
