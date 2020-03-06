@@ -378,23 +378,27 @@ export const PhenomenonEditForm = ({
                             </div>
                             <div className="modal-form-section">
                                 <h3>{requestTranslation("createPhenomenaFormTypeLabel")}</h3>
-
-                                    {map(phenomenonTypes, phenomenonType => (
-                                    <StateContainer key={phenomenonType.id}>
-                                        <PhenomenaState>
-                                            <PhenomenonType type={phenomenonType.alias} size={15}/>
-                                        </PhenomenaState>
-                                        <Radiobox
-                                            name="type"
-                                            label={requestTranslation(phenomenonType.alias)}
-                                            value={phenomenonType.id}
-                                            checked={values.state.id === phenomenonType.id}
-                                            onClick={setState}
-                                            className='phenomena-radiobox'
-                                        />
-                                    </StateContainer>
+                                {map(phenomenonTypes, phenomenonType => (
+                                    <div className="container" style={{
+                                        display: "flex",
+                                        flexWrap: "wrap",
+                                        flexDirection: "row"
+                                    }}>
+                                        <StateContainer key={phenomenonType.id}>
+                                            <PhenomenaState>
+                                                <PhenomenonType type={phenomenonType.alias} size={15}/>
+                                            </PhenomenaState>
+                                            <Radiobox
+                                                name="type"
+                                                label={requestTranslation(phenomenonType.alias)}
+                                                value={phenomenonType.id}
+                                                checked={values.state.id === phenomenonType.id}
+                                                onClick={setState}
+                                                className='phenomena-radiobox'
+                                            />
+                                        </StateContainer>
+                                    </div>
                                 ))}
-
                             </div>
 
                             <div className="modal-form-section">
@@ -743,60 +747,65 @@ export const PhenomenonEditForm = ({
                             )}
                         </div>
 
-                        <ButtonsContainer
+                        < ButtonsContainer
                             className={"modal-form-section modal-form-actions"}
                         >
-                            {!radar && values.uuid && (
-                                <Fragment>
-                                    <button
-                                        className="btn btn-lg btn-plain-red"
-                                        onClick={() => setDeletingModalOpen(!deletingModalOpen)}
-                                        style={{
-                                            marginRight: "auto",
-                                            paddingLeft: 0
-                                        }}
-                                    >
-                                        {requestTranslation("delete")}
-                                    </button>
-                                    <Modal
-                                        isOpen={deletingModalOpen}
-                                        contentLabel="archive-sanity-check"
-                                        style={paddingModalStyles}
-                                        className={"paddedModal"}
-                                        ariaHideApp={false}
-                                    >
-                                        <div className={"confirmation-modal-content"}>
-                                            <h3 className={"confirmation-modal-title"}>
-                                                {requestTranslation("archiveDoubleCheck")}
-                                            </h3>
-                                            <div className={"confirmation-modal-actions"}>
-                                                <button
-                                                    className="btn btn-lg btn-plain-gray"
-                                                    onClick={() => setDeletingModalOpen(false)}
-                                                >
-                                                    {requestTranslation("cancel")}
-                                                </button>
-                                                <button
-                                                    className="btn btn-lg btn-primary"
-                                                    onClick={onDelete}
-                                                >
-                                                    {requestTranslation("delete")}
-                                                </button>
+                            {
+                                !radar && values.uuid && (
+                                    <Fragment>
+                                        <button
+                                            className="btn btn-lg btn-plain-red"
+                                            onClick={() => setDeletingModalOpen(!deletingModalOpen)}
+                                            style={{
+                                                marginRight: "auto",
+                                                paddingLeft: 0
+                                            }}
+                                        >
+                                            {requestTranslation("delete")}
+                                        </button>
+                                        <Modal
+                                            isOpen={deletingModalOpen}
+                                            contentLabel="archive-sanity-check"
+                                            style={paddingModalStyles}
+                                            className={"paddedModal"}
+                                            ariaHideApp={false}
+                                        >
+                                            <div className={"confirmation-modal-content"}>
+                                                <h3 className={"confirmation-modal-title"}>
+                                                    {requestTranslation("archiveDoubleCheck")}
+                                                </h3>
+                                                <div className={"confirmation-modal-actions"}>
+                                                    <button
+                                                        className="btn btn-lg btn-plain-gray"
+                                                        onClick={() => setDeletingModalOpen(false)}
+                                                    >
+                                                        {requestTranslation("cancel")}
+                                                    </button>
+                                                    <button
+                                                        className="btn btn-lg btn-primary"
+                                                        onClick={onDelete}
+                                                    >
+                                                        {requestTranslation("delete")}
+                                                    </button>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </Modal>
-                                </Fragment>
-                            )}
+                                        </Modal>
+                                    </Fragment>
+                                )
+                            }
                             <button className="btn btn-lg btn-plain-gray" onClick={onCancel}>
                                 {requestTranslation("cancel")}
                             </button>
-                            <button
+                            < button
                                 className="btn btn-lg btn-primary"
                                 onClick={handleSubmit}
                                 type="submit"
-                                disabled={isSubmitting || !isValid}
+                                disabled={isSubmitting || !isValid
+                                }
                             >
-                                {requestTranslation(values.uuid ? "update" : "create")}
+                                {
+                                    requestTranslation(values.uuid ? "update" : "create")
+                                }
                             </button>
                         </ButtonsContainer>
                     </div>
@@ -807,81 +816,81 @@ export const PhenomenonEditForm = ({
 }
 
 const Textarea = styled.textarea`
-  font-size: 16px;
-  min-height: 150px;
-  border-radius: 1px;
-`;
+            font-size: 16px;
+            min-height: 150px;
+            border-radius: 1px;
+            `;
 
 const StateContainer = styled.div`
-  display: flex;
-  box-sizing: border-box;
-  min-height: 25px;
-  align-items: center;
-`;
+            display: flex;
+            box-sizing: border-box;
+            min-height: 25px;
+            align-items: center;
+            `;
 
 const PhenomenaState = styled.div`
-    display: flex;
-    flex-shrink: 0;
-    align-items: center;
-    position: absolute;
-    z-index: 10;
-    left: 76px;
-`
+            display: flex;
+            flex-shrink: 0;
+            align-items: center;
+            position: absolute;
+            z-index: 10;
+            left: 76px;
+            `
 
 const RadarImageCloseContainer = styled.div`
-  position: absolute;
-  top: -15px;
-  right: -15px;
-  border-radius: 50%;
-  background-color: #f1f3f3;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  border: 1px solid gray;
-  &:hover {
-    cursor: pointer;
-  }
-`;
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            border-radius: 50%;
+            background-color: #f1f3f3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border: 1px solid gray;
+            &:hover {
+            cursor: pointer;
+            }
+            `;
 
 const RadarImageClose = styled.i`
-  /*color: gray;*/
-  opacity: 0.7;
-`;
+            /*color: gray;*/
+            opacity: 0.7;
+            `;
 
 const DeleteRowButton = styled.button`
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  border: 1px solid red;
-  color: red;
-  font-size: 16px;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-right: 10px;
-`;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 1px solid red;
+            color: red;
+            font-size: 16px;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 10px;
+            `;
 
 const CloseIcon = styled.i`
-  font-size: 14px;
-  font-weight: 700;
-  &:hover {
-    cursor: pointer;
-  }
-`;
+            font-size: 14px;
+            font-weight: 700;
+            &:hover {
+            cursor: pointer;
+            }
+            `;
 
 const RelatedPhenomena = styled.div`
-  height: 300px;
-  display: flex;
-  flex-direction: column;
-`;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            `;
 
 const ButtonsContainer = styled.div`
-  display: flex;
-  justify-content: flex-end;
-`;
+            display: flex;
+            justify-content: flex-end;
+            `;
 
 PhenomenonEditForm.propTypes = {
     phenomenon: PropTypes.object,
