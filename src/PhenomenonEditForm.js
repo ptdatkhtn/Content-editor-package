@@ -379,28 +379,22 @@ export const PhenomenonEditForm = ({
                             <div className="modal-form-section">
                                 <h3>{requestTranslation("createPhenomenaFormTypeLabel")}</h3>
                                 {map(phenomenonTypes, phenomenonType => (
-                                    <div className="container" style={{
-                                        display: "flex",
-                                        flexWrap: "wrap",
-                                        flexDirection: "row"
-                                    }}>
-                                        <StateContainer key={phenomenonType.id}>
-                                            <PhenomenaState>
-                                                <PhenomenonType type={phenomenonType.alias} size={15}/>
-                                            </PhenomenaState>
-                                            <Radiobox
-                                                name="type"
-                                                label={requestTranslation(phenomenonType.alias)}
-                                                value={phenomenonType.id}
-                                                checked={values.state.id === phenomenonType.id}
-                                                onClick={setState}
-                                                className='phenomena-radiobox'
-                                            />
-                                        </StateContainer>
-                                    </div>
+                                    <StateContainer key={phenomenonType.id}>
+                                        <PhenomenaState>
+                                            <PhenomenonType type={phenomenonType.alias} size={15}/>
+                                        </PhenomenaState>
+                                        <Radiobox
+                                            name="type"
+                                            label={requestTranslation(phenomenonType.alias)}
+                                            value={phenomenonType.id}
+                                            checked={values.state.id === phenomenonType.id}
+                                            onClick={setState}
+                                            className='phenomena-radiobox'
+                                        />
+                                    </StateContainer>
+
                                 ))}
                             </div>
-
                             <div className="modal-form-section">
                                 <h3>
                                     {requestTranslation("createPhenomenaFormTitleAndLeadLabel")}
