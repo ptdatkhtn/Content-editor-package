@@ -22,16 +22,16 @@ import {
     SelectImageInputContainer,
     PhenomenonType,
     Radiobox,
+    MaterialIcon,
     quillFormats,
     quillModules
 } from '@sangre-fp/ui'
 import PropTypes from 'prop-types'
 import ReactQuill from 'react-quill'
-
 import {usePhenomenonTypes} from './usePhenomenonTypes'
 import {useEditableGroups} from './useGroups'
 import {useFeedTags} from './useFeedTags'
-import linkVal from "@sangre-fp/reducers/radarSets";
+import linkVal from "@sangre-fp/reducers/radarSets"
 
 const makeGetValue = phenomenon => (field, defaultValue = null) =>
     (phenomenon && phenomenon[field]) ?? defaultValue
@@ -89,13 +89,12 @@ const SortableRelatedPhenomenaList = SortableContainer(
 )
 
 export const PhenomenonEditForm = ({
-                                       phenomenon,
-                                       // force radar context // TODO figure something out for this
-                                       radar,
-                                       onCancel,
-                                       onSubmit,
-                                       onDelete
-                                   }) => {
+   phenomenon,
+   radar,
+   onCancel,
+   onSubmit,
+   onDelete
+}) => {
     const {
         phenomenonTypes,
         loading: loadingPhenomenonTypes,
@@ -179,11 +178,12 @@ export const PhenomenonEditForm = ({
                 ) {
                     errors.newsFeedInput = requestTranslation("newsFeedError")
                 }
-                if (
-                    values.links.length &&
-                    !/^((http|https):\/\/)?www\.([A-z]+)\.([A-z]{2,})/.test(values.links)
-                ) {
-                    errors.links = requestTranslation("linksError")
+                if (values.links.length) {
+                    values.links.map(link => {
+                        if (!/^(ftp|http|https):\/\/[^ "]+$/.test(link.value)) {
+                            errors.links = requestTranslation("linksError")
+                        }
+                    })
                 }
 
                 return errors
@@ -309,52 +309,42 @@ export const PhenomenonEditForm = ({
                         <div className="modal-form-sections">
                             <div className="modal-form-section modal-form-header">
                                 <h2>{requestTranslation("createPhenomenaFormTitle")}</h2>
-                                <p>
-                                    {requestTranslation("createPhenomenaFormLanguageDescription")}
-                                </p>
                             </div>
 
-                            <div className="modal-form-section" style={{display: "flex"}}>
-                                {!radar && !values.uuid && (
-                                    <div className="form-group">
-                                        <h4>{requestTranslation("group")}</h4>
-                                        <div className="row">
-                                            <div className="col-6"
-                                                 style={{
-                                                     paddingRight: "12rem"
-                                                 }}
-                                            >
-                                                <Select
-                                                    name="group"
-                                                    className="fp-radar-select fp-radar-select--no-margin"
-                                                    value={values.group}
-                                                    valueKey="id"
-                                                    onBlur={() => setFieldTouched("group")}
-                                                    onChange={group => {
-                                                        setFieldValue("group", group ? group.id : null)
-                                                    }}
-                                                    options={groups}
-                                                    searchable={false}
-                                                    clearable={false}
-                                                />
-                                                {touched.group && errors.group && (
-                                                    <div className="description text-danger">
-                                                        {errors.group}
-                                                    </div>
-                                                )}
+                            {!values.uuid && (
+                                <div className='modal-form-section'>
+                                    <div className='row'>
+                                        {!radar && (
+                                            <div className='col-6'>
+                                                <div className='form-group'>
+                                                    <h4>{requestTranslation("group")}</h4>
+                                                    <Select
+                                                        name="group"
+                                                        className="fp-radar-select fp-radar-select--no-margin w-100"
+                                                        value={values.group}
+                                                        valueKey="id"
+                                                        onBlur={() => setFieldTouched("group")}
+                                                        onChange={group => {
+                                                            setFieldValue("group", group ? group.id : null)
+                                                        }}
+                                                        options={groups}
+                                                        searchable={false}
+                                                        clearable={false}
+                                                    />
+                                                    {touched.group && errors.group && (
+                                                        <div className="description text-danger">
+                                                            {errors.group}
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {!values.uuid && (
-                                    <div className="form-group">
-                                        <h4>{requestTranslation("language")}</h4>
-                                        <div className="row">
-                                            <div className="col-6">
+                                        )}
+                                        <div className='col-6'>
+                                            <div className="form-group">
+                                                <h4>{requestTranslation("language")}</h4>
                                                 <Select
                                                     name="language"
-                                                    className="fp-radar-select fp-radar-select--no-margin"
+                                                    className="fp-radar-select fp-radar-select--no-margin w-100"
                                                     value={values.language}
                                                     onChange={({value}) => {
                                                         setFieldValue("language", value)
@@ -372,28 +362,30 @@ export const PhenomenonEditForm = ({
                                             </div>
                                         </div>
                                     </div>
-                                )}
-
-
-                            </div>
+                                    <p className='mb-0 mt-2'>
+                                        {requestTranslation("createPhenomenaFormLanguageDescription")}
+                                    </p>
+                                </div>
+                            )}
                             <div className="modal-form-section">
                                 <h3>{requestTranslation("createPhenomenaFormTypeLabel")}</h3>
-                                {map(phenomenonTypes, phenomenonType => (
-                                    <StateContainer key={phenomenonType.id}>
-                                        <PhenomenaState>
-                                            <PhenomenonType type={phenomenonType.alias} size={15}/>
-                                        </PhenomenaState>
-                                        <Radiobox
-                                            name="type"
-                                            label={requestTranslation(phenomenonType.alias)}
-                                            value={phenomenonType.id}
-                                            checked={values.state.id === phenomenonType.id}
-                                            onClick={setState}
-                                            className='phenomena-radiobox'
-                                        />
-                                    </StateContainer>
-
-                                ))}
+                                <div className='d-flex flex-wrap'>
+                                    {map(phenomenonTypes, phenomenonType => (
+                                        <StateContainer key={phenomenonType.id}>
+                                            <PhenomenaState>
+                                                <PhenomenonType type={phenomenonType.alias} size={15}/>
+                                            </PhenomenaState>
+                                            <Radiobox
+                                                name="type"
+                                                label={requestTranslation(phenomenonType.alias)}
+                                                value={phenomenonType.id}
+                                                checked={values.state.id === phenomenonType.id}
+                                                onClick={setState}
+                                                className='phenomena-radiobox'
+                                            />
+                                        </StateContainer>
+                                    ))}
+                                </div>
                             </div>
                             <div className="modal-form-section">
                                 <h3>
@@ -456,7 +448,7 @@ export const PhenomenonEditForm = ({
                                     <ReactQuill
                                         className="fp-wysiwyg"
                                         style={{
-                                            height: "250px",
+                                            height: "150px",
                                             paddingBottom: "42px"
                                         }}
                                         modules={quillModules}
@@ -465,11 +457,6 @@ export const PhenomenonEditForm = ({
                                         onChange={value => setFieldValue("lead", value)}
                                         onBlur={() => setFieldTouched("lead")}
                                     />
-                                    <p>
-                                        {requestTranslation(
-                                            "createPhenomenaFormLeadLabelDescription"
-                                        )}
-                                    </p>
                                 </div>
                                 <h3>
                                     {requestTranslation("createPhenomenaFormMainContentLabel")}
@@ -491,25 +478,37 @@ export const PhenomenonEditForm = ({
                             </div>
 
                             <div className="modal-form-section">
-                                <h3>{requestTranslation('timing')}</h3>
-                                <div>{requestTranslation('estimatedTimeRange')}
-                                    <b>{values.timing.min}-{values.timing.max}</b></div>
-                                <PhenomenaTimingEditor
-                                    updateTiming={value => setFieldValue("timing", value)}
-                                    timing={values.timing}
-                                />
+                                <Dropdown
+                                    className="dropdown-toggle material-icons"
+                                    type="button"
+                                    data-toggle="collapse"
+                                    data-target="#collapsetiming"
+                                    aria-expanded="true"
+                                   >
+                                    expand_more
+                                </Dropdown>
+                                <h3 className='mb-0'>{requestTranslation('timing')}</h3>
+                                <div id="collapsetiming" className="collapse mt-4">
+                                    <div>{requestTranslation('estimatedTimeRange')}
+                                        <b>{' '}{values.timing.min}-{values.timing.max}</b></div>
+                                    <PhenomenaTimingEditor
+                                        updateTiming={value => setFieldValue("timing", value)}
+                                        timing={values.timing}
+                                    />
+                                </div>
                             </div>
                             <div className="modal-form-section">
-                                <button className="dropdown-fp dropdown-toggle" type="button" data-toggle="collapse"
-                                        data-target="#collapsemedia"
-                                        aria-expanded="true"
-                                        style={{
-                                            position: "absolute",
-                                            left: "93%"
-                                        }}>
-                                </button>
-                                <h3>{requestTranslation("media")}</h3>
-                                <div id="collapsemedia" className="collapse">
+                                <Dropdown
+                                    className="dropdown-toggle material-icons"
+                                    type="button"
+                                    data-toggle="collapse"
+                                    data-target="#collapsemedia"
+                                    aria-expanded="true"
+                                   >
+                                    expand_more
+                                </Dropdown>
+                                <h3 className='mb-0'>{requestTranslation("media")}</h3>
+                                <div id="collapsemedia" className="collapse mt-4">
                                     <h4>{requestTranslation("video")}</h4>
                                     <Input
                                         name="video"
@@ -589,33 +588,36 @@ export const PhenomenonEditForm = ({
                                 </div>
                             </div>
                             <div className="modal-form-section">
-                                <button className="dropdown-fp dropdown-toggle" type="button" data-toggle="collapse"
-                                        data-target="#collapselinks"
-                                        aria-expanded="true"
-                                        style={{
-                                            position: "absolute",
-                                            left: "93%"
-                                        }}>
-                                </button>
-                                <h3>{requestTranslation("PhenomenaLinks")}</h3>
-                                <div id="collapselinks" className="collapse">
+                                <Dropdown
+                                    className="dropdown-toggle material-icons"
+                                    type="button"
+                                    data-toggle="collapse"
+                                    data-target="#collapselinks"
+                                    aria-expanded="true"
+                                   >
+                                    expand_more
+                                </Dropdown>
+                                <h3 className='mb-0'>{requestTranslation("phenomenaLinks")}</h3>
+                                <div id="collapselinks" className="collapse mt-4">
                                     <PhenomenaLinks
                                         onChange={value => setFieldValue("links", value)}
-                                        values={values.links}/>
+                                        values={values.links}
+                                    />
                                 </div>
                             </div>
                             {values.group !== 0 && (
                                 <div className="modal-form-section">
-                                    <button className="dropdown-fp dropdown-toggle" type="button" data-toggle="collapse"
-                                            data-target="#collapsenews"
-                                            aria-expanded="true"
-                                            style={{
-                                                position: "absolute",
-                                                left: "93%"
-                                            }}>
-                                    </button>
-                                    <h3>{requestTranslation("newsFeed")}</h3>
-                                    <div id="collapsenews" className="collapse">
+                                    <Dropdown
+                                        className="dropdown-toggle material-icons"
+                                        type="button"
+                                        data-toggle="collapse"
+                                        data-target="#collapsenews"
+                                        aria-expanded="true"
+                                       >
+                                        expand_more
+                                    </Dropdown>
+                                    <h3 className='mb-0'>{requestTranslation("newsFeed")}</h3>
+                                    <div id="collapsenews" className="collapse mt-4">
                                         <p>{requestTranslation("feedDescription")}</p>
                                         <h4 className={"mb-2"}>{requestTranslation("feedUrl")}</h4>
                                         <div className="form-row align-items-center">
@@ -671,16 +673,17 @@ export const PhenomenonEditForm = ({
                             )}
 
                             <div className="modal-form-section">
-                                <button className="dropdown-fp dropdown-toggle" type="button" data-toggle="collapse"
-                                        data-target="#collapserelated"
-                                        aria-expanded="true"
-                                        style={{
-                                            position: "absolute",
-                                            left: "93%"
-                                        }}>
-                                </button>
-                                <h3>{requestTranslation("relatedPhenomena")}</h3>
-                                <div id="collapserelated" className="collapse">
+                                <Dropdown
+                                    className="dropdown-toggle material-icons"
+                                    type="button"
+                                    data-toggle="collapse"
+                                    data-target="#collapserelated"
+                                    aria-expanded="true"
+                                   >
+                                    expand_more
+                                </Dropdown>
+                                <h3 className='mb-0'>{requestTranslation("relatedPhenomena")}</h3>
+                                <div id="collapserelated" className="collapse mt-4">
                                     <div style={{overflow: "hidden"}} className="row">
                                         <div className="col-12 col-md-4">
                                             {values.relatedPhenomena.length > 0 && (
@@ -715,17 +718,17 @@ export const PhenomenonEditForm = ({
                             {canEditPublic && (
                                 <>
                                     <div className="modal-form-section">
-                                        <button className="dropdown-fp dropdown-toggle" type="button"
-                                                data-toggle="collapse"
-                                                data-target="#collapsetags"
-                                                aria-expanded="true"
-                                                style={{
-                                                    position: "absolute",
-                                                    left: "93%"
-                                                }}>
-                                        </button>
-                                        <h3>{requestTranslation("feed")}</h3>
-                                        <div id="collapsetags" className="collapse">
+                                        <Dropdown
+                                            className="dropdown-toggle material-icons"
+                                            type="button"
+                                            data-toggle="collapse"
+                                            data-target="#collapsetags"
+                                            aria-expanded="true"
+                                           >
+                                            expand_more
+                                        </Dropdown>
+                                        <h3 className='mb-0'>{requestTranslation("feed")}</h3>
+                                        <div id="collapsetags" className="collapse mt-4">
                                             <Select
                                                 name="feed"
                                                 value={values.feedTag}
@@ -790,7 +793,7 @@ export const PhenomenonEditForm = ({
                             <button className="btn btn-lg btn-plain-gray" onClick={onCancel}>
                                 {requestTranslation("cancel")}
                             </button>
-                            < button
+                            <button
                                 className="btn btn-lg btn-primary"
                                 onClick={handleSubmit}
                                 type="submit"
@@ -809,82 +812,92 @@ export const PhenomenonEditForm = ({
     )
 }
 
+const Dropdown = styled.i`
+    position: absolute;
+    left: 92%;
+    &:after {
+        display: none;
+    }
+`
+
 const Textarea = styled.textarea`
-            font-size: 16px;
-            min-height: 150px;
-            border-radius: 1px;
-            `;
+    font-size: 16px;
+    min-height: 150px;
+    border-radius: 1px;
+`
 
 const StateContainer = styled.div`
-            display: flex;
-            box-sizing: border-box;
-            min-height: 25px;
-            align-items: center;
-            `;
+    display: flex;
+    box-sizing: border-box;
+    min-height: 25px;
+    align-items: center;
+    width: 33.3%;
+    position: relative;
+`
 
 const PhenomenaState = styled.div`
-            display: flex;
-            flex-shrink: 0;
-            align-items: center;
-            position: absolute;
-            z-index: 10;
-            left: 76px;
-            `
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    position: absolute;
+    z-index: 10;
+    left: 26px;
+`
 
 const RadarImageCloseContainer = styled.div`
-            position: absolute;
-            top: -15px;
-            right: -15px;
-            border-radius: 50%;
-            background-color: #f1f3f3;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 30px;
-            height: 30px;
-            border: 1px solid gray;
-            &:hover {
-            cursor: pointer;
-            }
-            `;
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    border-radius: 50%;
+    background-color: #f1f3f3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border: 1px solid gray;
+    &:hover {
+    cursor: pointer;
+    }
+`
 
 const RadarImageClose = styled.i`
-            /*color: gray;*/
-            opacity: 0.7;
-            `;
+    /*color: gray;*/
+    opacity: 0.7;
+`
 
 const DeleteRowButton = styled.button`
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            border: 1px solid red;
-            color: red;
-            font-size: 16px;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-right: 10px;
-            `;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1px solid red;
+    color: red;
+    font-size: 16px;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+`
 
 const CloseIcon = styled.i`
-            font-size: 14px;
-            font-weight: 700;
-            &:hover {
-            cursor: pointer;
-            }
-            `;
+    font-size: 14px;
+    font-weight: 700;
+    &:hover {
+    cursor: pointer;
+    }
+`
 
 const RelatedPhenomena = styled.div`
-            height: 300px;
-            display: flex;
-            flex-direction: column;
-            `;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+`
 
 const ButtonsContainer = styled.div`
-            display: flex;
-            justify-content: flex-end;
-            `;
+    display: flex;
+    justify-content: flex-end;
+`
 
 PhenomenonEditForm.propTypes = {
     phenomenon: PropTypes.object,
