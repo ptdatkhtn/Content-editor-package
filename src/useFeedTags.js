@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import drupalApi from '@sangre-fp/connectors/drupal-api'
-import { usePhenomenonTypes } from './usePhenomenonTypes'
 
 export const useFeedTags = () => {
   const [feedTags, setFeedTags] = useState([])
