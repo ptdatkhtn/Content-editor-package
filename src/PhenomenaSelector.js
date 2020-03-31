@@ -228,14 +228,14 @@ class PhenomenaSelectorLegacy extends PureComponent {
     }
 
     this.setState({ loading: true }, () => {
-      getPhenomena(
-        textSearchValue,
-        searchGroups,
+      getPhenomena({
+        query: textSearchValue,
+        groups: searchGroups,
         page,
-        PAGE_SIZE,
+        size: PAGE_SIZE,
         language,
-        true
-      )
+        enhanced: true
+      })
         .then(({ result, page: { totalPages } }) => {
           const uuidList = result ? result.map(({ id }) => id) : []
 
