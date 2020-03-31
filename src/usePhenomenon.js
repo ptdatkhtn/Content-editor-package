@@ -34,8 +34,8 @@ export const usePhenomenon = (phenomenonId, groupId, skip) => {
   };
 };
 
-export const PhenomenonLoader = ({ uuid, group, children, skip }) => {
-  const loader = usePhenomenon(uuid, group, skip);
+export const PhenomenonLoader = ({ id, group, children, skip }) => {
+  const loader = usePhenomenon(id, group, skip);
 
   return children(loader);
 };

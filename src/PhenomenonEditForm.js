@@ -26,6 +26,10 @@ import {
     quillFormats,
     quillModules
 } from '@sangre-fp/ui'
+import {
+  transformFromLegacy,
+  transformToLegacy
+} from '@sangre-fp/connectors/phenomena-api'
 import PropTypes from 'prop-types'
 import ReactQuill from 'react-quill'
 import {usePhenomenonTypes} from './usePhenomenonTypes'
@@ -95,6 +99,8 @@ export const PhenomenonEditForm = ({
    onSubmit,
    onDelete
 }) => {
+    phenomenon = phenomenon ? transformToLegacy(phenomenon) : null
+
     const {
         phenomenonTypes,
         loading: loadingPhenomenonTypes,
@@ -208,7 +214,7 @@ export const PhenomenonEditForm = ({
                         )
                     }
 
-                    await onSubmit(phenomenonInput, {addedNewsFeeds, deletedNewsFeeds})
+                    await onSubmit(transformFromLegacy(phenomenonInput), {addedNewsFeeds, deletedNewsFeeds})
                 } catch (error) {
                     alert(error.message)
                 }

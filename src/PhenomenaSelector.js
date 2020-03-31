@@ -54,11 +54,13 @@ class PhenomenonRow extends PureComponent {
       listView,
       phenomenaTypesById
     } = this.props
-    const { title, shortTitle, state, halo, uuid, timing = {}, crowdSourcedValue } = phenomenon
-
+    let { content: { title, short_title, type, halo = false, id, time_range }, crowdSourcedValue } = phenomenon
+    if (!time_range) {
+      time_range = {}
+    }
     const href = getPhenomenonUrl(listView ? false : radarId, phenomenon, true)
-    const type = phenomenaTypesById[state.id]
-      ? phenomenaTypesById[state.id].alias
+    const phenomenonType = phenomenaTypesById[type]
+      ? phenomenaTypesById[type].alias
       : "undefined"
 
     return (
@@ -71,13 +73,13 @@ class PhenomenonRow extends PureComponent {
           <Radiobox
             large={!small}
             className={"align-self-center"}
-            label={shortTitle || title}
-            value={uuid}
+            label={short_title || title}
+            value={id}
             checked={checked}
-            phenomenaState={{ halo, type }}
+            phenomenaState={{ halo, type: phenomenonType }}
           />
             <div className='d-flex flex-column ml-auto' style={{ width: '30%' }}>
-              <div>{timing.min}-{timing.max}</div>
+              <div>{time_range.min}-{time_range.max}</div>
               <div style={{ fontSize: '11px' }}>{requestTranslation('crowdSourced')} {crowdSourcedValue ? crowdSourcedValue : '-'}</div>
             <div/>
           </div>
@@ -190,18 +192,18 @@ class PhenomenaSelectorLegacy extends PureComponent {
     )
   }
 
-  matchPhenomenaWithStatistics = (phenomena, statistics) => {
+  matchPhenomenaWithStatistics = (phenomenonDocuments, statistics) => {
     const { phenomenaList } = this.state
 
-      const newFilteredPhenomena = _.uniqBy([...phenomena.filter(({ archived }) => !archived)], 'uuid')
+      const newFilteredPhenomena = _.uniqBy([...phenomenonDocuments.filter(({ archived }) => !archived)], 'id')
 
-      const newPhenomena = _.map(newFilteredPhenomena, item => ({
-        ...item,
-        crowdSourcedValue: statistics[item.uuid] ?
-            _.round(statistics[item.uuid].year_median, 2) : null
+      const newPhenomena = _.map(newFilteredPhenomena, phenomenonDoc => ({
+        ...phenomenonDoc,
+        crowdSourcedValue: statistics[phenomenonDoc.id] ?
+            _.round(statistics[phenomenonDoc.id].year_median, 2) : null
       }))
 
-      return _.uniqBy([...phenomenaList, ...newPhenomena], 'uuid')
+      return _.uniqBy([...phenomenaList, ...newPhenomena], 'id')
   }
 
 
@@ -234,16 +236,16 @@ class PhenomenaSelectorLegacy extends PureComponent {
         language,
         true
       )
-        .then(data => {
-          const uuidList = data.result ? data.result.map(({ uuid }) => uuid) : []
+        .then(({ result, page: { totalPages } }) => {
+          const uuidList = result ? result.map(({ id }) => id) : []
 
           if (uuidList.length) {
             statisticsApi.getPhenomenaStatistics(uuidList.join(','))
               .then(statisticsData => {
                   this.setState({
                     loading: false,
-                    totalPages: data.page.totalPages,
-                    phenomenaList: this.matchPhenomenaWithStatistics(data.result, statisticsData.data)
+                    totalPages: totalPages,
+                    phenomenaList: this.matchPhenomenaWithStatistics(result, statisticsData.data)
                   })
               })
               .catch(err => this.setState({ loading: false }))
@@ -259,7 +261,7 @@ class PhenomenaSelectorLegacy extends PureComponent {
     })
   }
 
-  isChecked({ uuid }) {
+  isChecked({ id }) {
     const { selectedPhenomena } = this.props
 
     if (!selectedPhenomena) {
@@ -267,17 +269,9 @@ class PhenomenaSelectorLegacy extends PureComponent {
     }
 
     if (_.isArray(selectedPhenomena)) {
-
-      return (
-        selectedPhenomena.length > 0 &&
-        _.find(
-          selectedPhenomena,
-          p => p.uuid === uuid
-        )
-      )
+      return selectedPhenomena.length > 0 && _.find(selectedPhenomena,p => p.id === id)
     }
-
-    return uuid.toLowerCase() === selectedPhenomena.uuid.toLowerCase()
+    return id === selectedPhenomena.id
   }
 
   renderSearchResults = () => {
@@ -290,21 +284,21 @@ class PhenomenaSelectorLegacy extends PureComponent {
     } = this.props
     const { phenomenaList } = this.state
 
-    const excludedPhenomenonUuids = map(excludedPhenomena, p => p.uuid)
+    const excludedPhenomenonUuids = map(excludedPhenomena, p => p.id)
     const filteredList = filter(
       phenomenaList,
-      p => !excludedPhenomenonUuids.includes(p.uuid)
+      p => !excludedPhenomenonUuids.includes(p.id)
     )
 
     if (filteredList.length) {
       return filteredList.map(phenomenon => {
-        const { uuid } = phenomenon
+        const { id } = phenomenon
 
         return (
           <PhenomenonRow
             phenomenaTypesById={phenomenaTypesById}
             listView={listView}
-            key={uuid}
+            key={id}
             small={small}
             onSelect={this.props.onSelect}
             phenomenon={phenomenon}
