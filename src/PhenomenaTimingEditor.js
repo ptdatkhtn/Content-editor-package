@@ -97,6 +97,12 @@ export default class PhenomenaTimingEditor extends Component {
     this.setState({ values }, () => updateTiming({ min: firstYear, max: secondYear }))
   }
 
+  clearValue = () => {
+    const { updateTiming } = this.props
+
+    this.setState({ values: [ null, null ] }, () => updateTiming({}))
+  }
+
   renderRangeButton = (range, index) => {
     const { label, values } = range
     const { min, max } = values
@@ -140,6 +146,7 @@ export default class PhenomenaTimingEditor extends Component {
         <div className='w-100 d-flex'>
           {_.map(RANGES, this.renderRangeButton)}
         </div>
+        <button className='btn btn-lg btn-plain-gray pl-0' onClick={this.clearValue}>CLEAR</button>
         <RangeStyles />
       </div>
     )
