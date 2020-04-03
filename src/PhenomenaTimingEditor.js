@@ -80,7 +80,7 @@ export const getRangeValueFromYear = year => {
 
 export default class PhenomenaTimingEditor extends Component {
   state = {
-    values: [getRangeValueFromYear(this.props.timing.min), getRangeValueFromYear(this.props.timing.max)]
+    values: [getRangeValueFromYear(this.props.timing ? this.props.timing.min : null), getRangeValueFromYear(this.props.timing ? this.props.timing.max : null)]
   }
 
   handleChange = values => {

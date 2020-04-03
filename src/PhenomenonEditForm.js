@@ -160,7 +160,7 @@ export const PhenomenonEditForm = ({
                 newsFeeds: getValue("newsFeeds", []),
                 newsFeedInput: "",
                 feedTag: getValue("feedTag", []),
-                timing: getValue("timing", {min: new Date().getFullYear() + 3, max: new Date().getFullYear() + 8}),
+                timing: getValue("timing", null),
                 links: getValue("links", [])
             }}
             validate={values => {
@@ -496,7 +496,7 @@ export const PhenomenonEditForm = ({
                                 <h3 className='mb-0'>{requestTranslation('timing')}</h3>
                                 <div id="collapsetiming" className="collapse mt-4">
                                     <div>{requestTranslation('estimatedTimeRange')}
-                                        <b>{' '}{values.timing.min}-{values.timing.max}</b></div>
+                                        <b>{' '}{values.timing ? values.timing.min : ''}-{values.timing ? values.timing.max : ''}</b></div>
                                     <PhenomenaTimingEditor
                                         updateTiming={value => setFieldValue("timing", value)}
                                         timing={values.timing}
