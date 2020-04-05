@@ -100,7 +100,6 @@ export const PhenomenonEditForm = ({
    onDelete
 }) => {
     phenomenon = phenomenon ? transformToLegacy(phenomenon) : null
-
     const {
         phenomenonTypes,
         loading: loadingPhenomenonTypes,
