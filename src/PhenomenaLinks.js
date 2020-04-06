@@ -57,7 +57,7 @@ const PhenomenaLinks = ({ values, onChange }) => {
             ))}
             {disabled && <p className='mt-1 mb-1'>{requestTranslation('linksError')}</p>}
             <button
-              className="btn btn-lg btn-link d-block"
+              className="btn btn-lg btn-link d-block mt-2"
               disabled={disabled}
               onClick={addMore}
               type="button"

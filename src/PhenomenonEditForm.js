@@ -139,6 +139,9 @@ export const PhenomenonEditForm = ({
         type => type.id === initialState.id
     )
 
+
+    console.log(phenomenon, 'pheno')
+
     return (
         <Formik
             initialValues={{
@@ -482,15 +485,22 @@ export const PhenomenonEditForm = ({
 
                             <div className="modal-form-section">
                                 <Dropdown
-                                    className="dropdown-toggle material-icons"
+                                    className="dropdown-toggle d-flex align-items-center justify-content-between"
                                     type="button"
                                     data-toggle="collapse"
                                     data-target="#collapsetiming"
                                     aria-expanded="true"
-                                   >
-                                    expand_more
+                                >
+                                    <h3 className='mb-0'>
+                                        {requestTranslation('timing')}
+                                        <DropdownValue>
+                                            {values.timing && values.timing.min ? `: ${values.timing.min} - ${values.timing.max}` : requestTranslation('noTimingSelected')}
+                                        </DropdownValue>
+                                    </h3>
+                                    <i className='material-icons'>
+                                        expand_more
+                                    </i>
                                 </Dropdown>
-                                <h3 className='mb-0'>{requestTranslation('timing')}</h3>
                                 <div id="collapsetiming" className="collapse mt-4">
                                     <div>{requestTranslation('estimatedTimeRange')}
                                         <b>{' '}{values.timing ? values.timing.min : ''}-{values.timing ? values.timing.max : ''}</b></div>
@@ -502,15 +512,22 @@ export const PhenomenonEditForm = ({
                             </div>
                             <div className="modal-form-section">
                                 <Dropdown
-                                    className="dropdown-toggle material-icons"
+                                    className="dropdown-toggle d-flex align-items-center justify-content-between"
                                     type="button"
                                     data-toggle="collapse"
                                     data-target="#collapsemedia"
                                     aria-expanded="true"
-                                   >
-                                    expand_more
+                                >
+                                    <h3 className='mb-0'>
+                                        {requestTranslation("media")}
+                                        <DropdownValue>
+                                            {values.video || values.image ? requestTranslation('mediaUploaded') : requestTranslation('noMediaUploaded')}
+                                        </DropdownValue>
+                                    </h3>
+                                    <i className='material-icons'>
+                                        expand_more
+                                    </i>
                                 </Dropdown>
-                                <h3 className='mb-0'>{requestTranslation("media")}</h3>
                                 <div id="collapsemedia" className="collapse mt-4">
                                     <h4>{requestTranslation("video")}</h4>
                                     <Input
@@ -528,7 +545,6 @@ export const PhenomenonEditForm = ({
                                         <br/>
                                         {requestTranslation("vimeoFormat")}
                                     </p>
-
                                     <div className="form-group">
                                         <h4>{requestTranslation("image")}</h4>
                                         <SelectImageContainer>
@@ -592,15 +608,22 @@ export const PhenomenonEditForm = ({
                             </div>
                             <div className="modal-form-section">
                                 <Dropdown
-                                    className="dropdown-toggle material-icons"
+                                    className="dropdown-toggle d-flex align-items-center justify-content-between"
                                     type="button"
                                     data-toggle="collapse"
                                     data-target="#collapselinks"
                                     aria-expanded="true"
-                                   >
-                                    expand_more
+                                >
+                                    <h3 className='mb-0'>
+                                        {requestTranslation("phenomenaLinks")}
+                                        <DropdownValue>
+                                            {values.links.length ? requestTranslation('linksUploaded') : requestTranslation('noLinksUploaded')}
+                                        </DropdownValue>
+                                    </h3>
+                                    <i className='material-icons'>
+                                        expand_more
+                                    </i>
                                 </Dropdown>
-                                <h3 className='mb-0'>{requestTranslation("phenomenaLinks")}</h3>
                                 <div id="collapselinks" className="collapse mt-4">
                                     <PhenomenaLinks
                                         onChange={value => setFieldValue("links", value)}
@@ -611,15 +634,22 @@ export const PhenomenonEditForm = ({
                             {values.group !== 0 && (
                                 <div className="modal-form-section">
                                     <Dropdown
-                                        className="dropdown-toggle material-icons"
+                                        className="dropdown-toggle d-flex align-items-center justify-content-between"
                                         type="button"
                                         data-toggle="collapse"
                                         data-target="#collapsenews"
                                         aria-expanded="true"
-                                       >
-                                        expand_more
+                                    >
+                                        <h3 className='mb-0'>
+                                            {requestTranslation("newsFeed")}
+                                            <DropdownValue>
+                                                {values.newsFeedInput ? requestTranslation('newsFeedsUploaded') : requestTranslation('noNewsFeedsUploaded')}
+                                            </DropdownValue>
+                                        </h3>
+                                        <i className='material-icons'>
+                                            expand_more
+                                        </i>
                                     </Dropdown>
-                                    <h3 className='mb-0'>{requestTranslation("newsFeed")}</h3>
                                     <div id="collapsenews" className="collapse mt-4">
                                         <p>{requestTranslation("feedDescription")}</p>
                                         <h4 className={"mb-2"}>{requestTranslation("feedUrl")}</h4>
@@ -677,15 +707,22 @@ export const PhenomenonEditForm = ({
 
                             <div className="modal-form-section">
                                 <Dropdown
-                                    className="dropdown-toggle material-icons"
+                                    className="dropdown-toggle d-flex align-items-center justify-content-between"
                                     type="button"
                                     data-toggle="collapse"
                                     data-target="#collapserelated"
                                     aria-expanded="true"
-                                   >
-                                    expand_more
+                                >
+                                    <h3 className='mb-0'>
+                                        {requestTranslation("relatedPhenomena")}
+                                        <DropdownValue>
+                                            {values.relatedPhenomena.length ? requestTranslation('hasRelatedPhenomena') : requestTranslation('hasNoRelatedPhenomena')}
+                                        </DropdownValue>
+                                    </h3>
+                                    <i className='material-icons'>
+                                        expand_more
+                                    </i>
                                 </Dropdown>
-                                <h3 className='mb-0'>{requestTranslation("relatedPhenomena")}</h3>
                                 <div id="collapserelated" className="collapse mt-4">
                                     <div style={{overflow: "hidden"}} className="row">
                                         <div className="col-12 col-md-4">
@@ -722,15 +759,22 @@ export const PhenomenonEditForm = ({
                                 <>
                                     <div className="modal-form-section">
                                         <Dropdown
-                                            className="dropdown-toggle material-icons"
+                                            className="dropdown-toggle d-flex align-items-center justify-content-between"
                                             type="button"
                                             data-toggle="collapse"
                                             data-target="#collapsetags"
                                             aria-expanded="true"
-                                           >
-                                            expand_more
+                                        >
+                                            <h3 className='mb-0'>
+                                                {requestTranslation("feed")}
+                                                <DropdownValue>
+                                                    {values.feedTag ? requestTranslation('hasFeedTags') : requestTranslation('hasNoFeedTags')}
+                                                </DropdownValue>
+                                            </h3>
+                                            <i className='material-icons'>
+                                                expand_more
+                                            </i>
                                         </Dropdown>
-                                        <h3 className='mb-0'>{requestTranslation("feed")}</h3>
                                         <div id="collapsetags" className="collapse mt-4">
                                             <Select
                                                 name="feed"
@@ -815,9 +859,11 @@ export const PhenomenonEditForm = ({
     )
 }
 
-const Dropdown = styled.i`
-    position: absolute;
-    left: 92%;
+const DropdownValue = styled.span`
+    font-size: 16px;
+`
+
+const Dropdown = styled.div`
     &:after {
         display: none;
     }
