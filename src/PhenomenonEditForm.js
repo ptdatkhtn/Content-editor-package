@@ -212,7 +212,6 @@ export const PhenomenonEditForm = ({
                             ({uuid, title}) => ({uuid, title})
                         )
                     }
-
                     await onSubmit(transformFromLegacy(phenomenonInput), {addedNewsFeeds, deletedNewsFeeds})
                 } catch (error) {
                     alert(error.message)
@@ -300,11 +299,10 @@ export const PhenomenonEditForm = ({
                 }
 
                 const group = groups.find(group => group.id === values.group)
-
                 if (values.uuid && !group) {
                     return (
                         <div className="text-center text-danger py-5">
-                            You do not have the permission to ${values.uuid ? 'edit this' : 'add a'} phenomenon.
+                            You do not have the permission to {values.uuid ? 'edit this' : 'add a'} phenomenon.
                         </div>
                     )
                 }
