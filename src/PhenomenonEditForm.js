@@ -140,6 +140,9 @@ export const PhenomenonEditForm = ({
         type => type.id === initialState.id
     )
 
+
+    console.log(phenomenon, 'pheno')
+
     return (
         <Formik
             initialValues={{
@@ -491,7 +494,12 @@ export const PhenomenonEditForm = ({
                                     data-target="#collapsetiming"
                                     aria-expanded="true"
                                 >
-                                    <h3 className='mb-0'>{requestTranslation('timing')}</h3>
+                                    <h3 className='mb-0'>
+                                        {requestTranslation('timing')}
+                                        <DropdownValue>
+                                            {values.timing && values.timing.min ? `: ${values.timing.min} - ${values.timing.max}` : requestTranslation('noTimingSelected')}
+                                        </DropdownValue>
+                                    </h3>
                                     <i className='material-icons'>
                                         expand_more
                                     </i>
@@ -513,7 +521,12 @@ export const PhenomenonEditForm = ({
                                     data-target="#collapsemedia"
                                     aria-expanded="true"
                                 >
-                                    <h3 className='mb-0'>{requestTranslation("media")}</h3>
+                                    <h3 className='mb-0'>
+                                        {requestTranslation("media")}
+                                        <DropdownValue>
+                                            {values.video || values.image ? requestTranslation('mediaUploaded') : requestTranslation('noMediaUploaded')}
+                                        </DropdownValue>
+                                    </h3>
                                     <i className='material-icons'>
                                         expand_more
                                     </i>
@@ -535,7 +548,6 @@ export const PhenomenonEditForm = ({
                                         <br/>
                                         {requestTranslation("vimeoFormat")}
                                     </p>
-
                                     <div className="form-group">
                                         <h4>{requestTranslation("image")}</h4>
                                         <SelectImageContainer>
@@ -605,7 +617,12 @@ export const PhenomenonEditForm = ({
                                     data-target="#collapselinks"
                                     aria-expanded="true"
                                 >
-                                    <h3 className='mb-0'>{requestTranslation("phenomenaLinks")}</h3>
+                                    <h3 className='mb-0'>
+                                        {requestTranslation("phenomenaLinks")}
+                                        <DropdownValue>
+                                            {values.links.length ? requestTranslation('linksUploaded') : requestTranslation('noLinksUploaded')}
+                                        </DropdownValue>
+                                    </h3>
                                     <i className='material-icons'>
                                         expand_more
                                     </i>
@@ -626,7 +643,12 @@ export const PhenomenonEditForm = ({
                                         data-target="#collapsenews"
                                         aria-expanded="true"
                                     >
-                                        <h3 className='mb-0'>{requestTranslation("newsFeed")}</h3>
+                                        <h3 className='mb-0'>
+                                            {requestTranslation("newsFeed")}
+                                            <DropdownValue>
+                                                {values.newsFeedInput ? requestTranslation('newsFeedsUploaded') : requestTranslation('noNewsFeedsUploaded')}
+                                            </DropdownValue>
+                                        </h3>
                                         <i className='material-icons'>
                                             expand_more
                                         </i>
@@ -694,7 +716,12 @@ export const PhenomenonEditForm = ({
                                     data-target="#collapserelated"
                                     aria-expanded="true"
                                 >
-                                    <h3 className='mb-0'>{requestTranslation("relatedPhenomena")}</h3>
+                                    <h3 className='mb-0'>
+                                        {requestTranslation("relatedPhenomena")}
+                                        <DropdownValue>
+                                            {values.relatedPhenomena.length ? requestTranslation('hasRelatedPhenomena') : requestTranslation('hasNoRelatedPhenomena')}
+                                        </DropdownValue>
+                                    </h3>
                                     <i className='material-icons'>
                                         expand_more
                                     </i>
@@ -741,7 +768,12 @@ export const PhenomenonEditForm = ({
                                             data-target="#collapsetags"
                                             aria-expanded="true"
                                         >
-                                            <h3 className='mb-0'>{requestTranslation("feed")}</h3>
+                                            <h3 className='mb-0'>
+                                                {requestTranslation("feed")}
+                                                <DropdownValue>
+                                                    {values.feedTag ? requestTranslation('hasFeedTags') : requestTranslation('hasNoFeedTags')}
+                                                </DropdownValue>
+                                            </h3>
                                             <i className='material-icons'>
                                                 expand_more
                                             </i>
@@ -829,6 +861,10 @@ export const PhenomenonEditForm = ({
         </Formik>
     )
 }
+
+const DropdownValue = styled.span`
+    font-size: 16px;
+`
 
 const Dropdown = styled.div`
     &:after {
