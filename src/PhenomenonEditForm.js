@@ -118,7 +118,6 @@ export const PhenomenonEditForm = ({
         loading: loadingFeedTags,
         error: errorFeedTags
     } = useFeedTags()
-
     const getValue = makeGetValue(phenomenon)
     const [deletingModalOpen, setDeletingModalOpen] = useState(false)
 
@@ -771,7 +770,11 @@ export const PhenomenonEditForm = ({
                                         <div id="collapsetags" className="collapse mt-4">
                                             <Select
                                                 name="feed"
-                                                value={values.feedTag}
+                                                value={values.feedTag.map(({ id }) => {
+                                                  console.log(id)
+                                                  console.log(feedTags.find(({ id: tagId }) => id === tagId ))
+                                                  return feedTags.find(({ id: tagId }) => tagId === id )
+                                                })}
                                                 labelKey="title"
                                                 valueKey="id"
                                                 onChange={value => setFieldValue("feedTag", value)}
