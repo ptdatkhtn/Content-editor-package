@@ -49,7 +49,7 @@ const getType = type =>
 
 const SortableRelatedPhenomena = SortableElement(
     ({relatedPhenom, onSelect}) => {
-        const {title} = relatedPhenom
+        const {content: { title }} = relatedPhenom
 
         return (
             <li
@@ -76,7 +76,7 @@ const SortableRelatedPhenomena = SortableElement(
 )
 
 const SortableRelatedPhenomenaList = SortableContainer(
-    ({relatedPhenomena, onSelect}) => {
+    ({ relatedPhenomena, onSelect }) => {
         return (
             <ul className="pl-0" style={{listStyleType: "none"}}>
                 {relatedPhenomena.map((relatedPhenom, index) => (
@@ -138,9 +138,6 @@ export const PhenomenonEditForm = ({
         phenomenonTypes,
         type => type.id === initialState.id
     )
-
-
-    console.log(phenomenon, 'pheno')
 
     return (
         <Formik
@@ -209,11 +206,7 @@ export const PhenomenonEditForm = ({
                     )
 
                     const phenomenonInput = {
-                        ...values,
-                        relatedPhenomena: map(
-                            values.relatedPhenomena,
-                            ({uuid, title}) => ({uuid, title})
-                        )
+                        ...values
                     }
                     await onSubmit(transformFromLegacy(phenomenonInput), {addedNewsFeeds, deletedNewsFeeds})
                 } catch (error) {
@@ -258,14 +251,14 @@ export const PhenomenonEditForm = ({
 
                 const toggleRelatedPhenomenon = phenomenon => {
                     const exists = values.relatedPhenomena.find(
-                        relatedPhenomenon => phenomenon.uuid === relatedPhenomenon.uuid
+                        relatedPhenomenon => phenomenon.id === relatedPhenomenon.id
                     )
                     setFieldValue(
                         "relatedPhenomena",
                         exists
                             ? values.relatedPhenomena.filter(
                             relatedPhenomenon =>
-                                phenomenon.uuid !== relatedPhenomenon.uuid
+                                phenomenon.id !== relatedPhenomenon.id
                             )
                             : values.relatedPhenomena.concat([phenomenon])
                     )
@@ -768,7 +761,7 @@ export const PhenomenonEditForm = ({
                                             <h3 className='mb-0'>
                                                 {requestTranslation("feed")}
                                                 <DropdownValue>
-                                                    {values.feedTag ? requestTranslation('hasFeedTags') : requestTranslation('hasNoFeedTags')}
+                                                    {values.feedTag.length ? requestTranslation('hasFeedTags') : requestTranslation('hasNoFeedTags')}
                                                 </DropdownValue>
                                             </h3>
                                             <i className='material-icons'>

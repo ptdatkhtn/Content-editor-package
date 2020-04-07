@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { getPhenomenonByUUIDAndGroup } from "@sangre-fp/connectors/phenomena-api";
+import { useState, useEffect } from "react"
+import { getPhenomenonByUUIDAndGroup } from "@sangre-fp/connectors/phenomena-api"
 
 export const usePhenomenon = (phenomenonId, groupId, skip) => {
   const [phenomenon, setPhenomenon] = useState(null);
@@ -11,9 +11,9 @@ export const usePhenomenon = (phenomenonId, groupId, skip) => {
     setError(null);
 
     try {
-      setPhenomenon(await getPhenomenonByUUIDAndGroup(id, group));
+      setPhenomenon(await getPhenomenonByUUIDAndGroup(id, group))
     } catch (e) {
-      setError(e);
+      setError(e)
     }
 
     setLoading(false);
@@ -35,7 +35,7 @@ export const usePhenomenon = (phenomenonId, groupId, skip) => {
 };
 
 export const PhenomenonLoader = ({ id, group, children, skip }) => {
-  const loader = usePhenomenon(id, group, skip);
+  const loader = usePhenomenon(id, group, skip)
 
-  return children(loader);
+  return children(loader)
 };
