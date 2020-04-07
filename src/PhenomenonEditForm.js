@@ -771,8 +771,6 @@ export const PhenomenonEditForm = ({
                                             <Select
                                                 name="feed"
                                                 value={values.feedTag.map(({ id }) => {
-                                                  console.log(id)
-                                                  console.log(feedTags.find(({ id: tagId }) => id === tagId ))
                                                   return feedTags.find(({ id: tagId }) => tagId === id )
                                                 })}
                                                 labelKey="title"
