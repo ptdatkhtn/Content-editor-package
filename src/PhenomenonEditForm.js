@@ -193,6 +193,7 @@ export const PhenomenonEditForm = ({
                 return errors
             }}
             onSubmit={async (values, {setSubmitting}) => {
+              console.log(values)
                 try {
                     const originalNewsFeeds = getValue("newsFeeds", [])
                     const addedNewsFeeds = differenceBy(
@@ -207,6 +208,7 @@ export const PhenomenonEditForm = ({
                     const phenomenonInput = {
                         ...values
                     }
+
                     await onSubmit(transformFromLegacy(phenomenonInput), {addedNewsFeeds, deletedNewsFeeds})
                 } catch (error) {
                     alert(error.message)
@@ -635,7 +637,7 @@ export const PhenomenonEditForm = ({
                                         <h3 className='mb-0'>
                                             {requestTranslation("newsFeed")}
                                             <DropdownValue>
-                                                {values.newsFeedInput ? requestTranslation('newsFeedsUploaded') : requestTranslation('noNewsFeedsUploaded')}
+                                                {values.newsFeedInput || (Array.isArray(values.newsFeeds) && values.newsFeeds.length > 0) ? requestTranslation('newsFeedsUploaded') : requestTranslation('noNewsFeedsUploaded')}
                                             </DropdownValue>
                                         </h3>
                                         <i className='material-icons'>
