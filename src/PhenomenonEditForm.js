@@ -860,6 +860,7 @@ const DropdownValue = styled.span`
 `
 
 const Dropdown = styled.div`
+        -webkit-appearance: none;
     &:after {
         display: none;
     }
