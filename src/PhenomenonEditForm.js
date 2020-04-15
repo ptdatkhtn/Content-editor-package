@@ -478,24 +478,10 @@ export const PhenomenonEditForm = ({
                             </div>
 
                             <div className="modal-form-section">
-                                <Dropdown
-                                    className="dropdown-toggle d-flex align-items-center justify-content-between"
-                                    type="button"
-                                    data-toggle="collapse"
-                                    data-target="#collapsetiming"
-                                    aria-expanded="true"
-                                >
-                                    <h3 className='mb-0'>
+                                    <h3 className='mb-0' style={{paddingBottom: '21px'}}>
                                         {requestTranslation('timing')}
-                                        <DropdownValue>
-                                            {values.timing && values.timing.min ? `: ${values.timing.min} - ${values.timing.max}` : requestTranslation('noTimingSelected')}
-                                        </DropdownValue>
                                     </h3>
-                                    <i className='material-icons'>
-                                        expand_more
-                                    </i>
-                                </Dropdown>
-                                <div id="collapsetiming" className="collapse mt-4">
+                                <div>
                                     <div>{requestTranslation('estimatedTimeRange')}
                                         <b>{' '}{values.timing ? values.timing.min : ''}-{values.timing ? values.timing.max : ''}</b></div>
                                     <PhenomenaTimingEditor
