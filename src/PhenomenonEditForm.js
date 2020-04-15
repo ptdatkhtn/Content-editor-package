@@ -93,13 +93,13 @@ const SortableRelatedPhenomenaList = SortableContainer(
 )
 
 export const PhenomenonEditForm = ({
-   phenomenon,
+   phenomenon: basePhenomenon,
    radar,
    onCancel,
    onSubmit,
    onDelete
 }) => {
-    phenomenon = phenomenon ? transformToLegacy(phenomenon) : null
+    const phenomenon = basePhenomenon ? transformToLegacy(basePhenomenon) : null
     const {
         phenomenonTypes,
         loading: loadingPhenomenonTypes,
