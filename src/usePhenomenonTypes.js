@@ -18,7 +18,7 @@ const sortedTypes = types => {
   return types
 }
 
-export const usePhenomenonTypes = () => {
+export const usePhenomenonTypes = (groupId) => {
   const [phenomenonTypes, setPhenomenonTypes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -28,7 +28,7 @@ export const usePhenomenonTypes = () => {
     setError(null);
 
     try {
-      setPhenomenonTypes(await drupalApi.getPhenomenaTypes());
+      setPhenomenonTypes(await drupalApi.getPhenomenaTypes(groupId));
     } catch (e) {
       setError(e);
     }

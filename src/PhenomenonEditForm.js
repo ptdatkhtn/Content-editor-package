@@ -100,11 +100,8 @@ export const PhenomenonEditForm = ({
    onDelete
 }) => {
     phenomenon = phenomenon ? transformToLegacy(phenomenon) : null
-    const {
-        phenomenonTypes,
-        loading: loadingPhenomenonTypes,
-        error: errorPhenomenonTypes
-    } = usePhenomenonTypes()
+    const getValue = makeGetValue(phenomenon)
+
 
     const {
         groups,
@@ -118,7 +115,7 @@ export const PhenomenonEditForm = ({
         loading: loadingFeedTags,
         error: errorFeedTags
     } = useFeedTags()
-    const getValue = makeGetValue(phenomenon)
+
     const [deletingModalOpen, setDeletingModalOpen] = useState(false)
 
     const loading = loadingFeedTags || loadingPhenomenonTypes || loadingGroups
@@ -229,6 +226,12 @@ export const PhenomenonEditForm = ({
                   isSubmitting,
                   isValid
               }) => {
+                const {
+                    phenomenonTypes,
+                    loading: loadingPhenomenonTypes,
+                    error: errorPhenomenonTypes
+                } = usePhenomenonTypes( radar ? radar.groupId : getValue("group"))
+
                 const addNewsFeed = () => {
                     if (!errors.newsFeedInput) {
                         setFieldValue("newsFeeds", [
