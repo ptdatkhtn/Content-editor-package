@@ -13,12 +13,12 @@ import { usePhenomenonTypes } from "./usePhenomenonTypes"
 export const ALL_GROUP_VALUE = -1
 
 const getPhenomenonUrl = (radarId = false, phenomenon, hideEdit = false) => {
-  const { group, uuid } = phenomenon
+  const { group, id } = phenomenon
   const hasGroup = phenomenon.hasOwnProperty("group")
   const groupUrl = hasGroup ? `group=${group}` : ""
 
   if (!radarId) {
-    return `${process.env.REACT_APP_PUBLIC_URL}/fp-phenomena/${uuid}${
+    return `${process.env.REACT_APP_PUBLIC_URL}/fp-phenomena/${id}${
       groupUrl.length ? `/?${groupUrl}` : ""
     }`
   }
@@ -26,7 +26,7 @@ const getPhenomenonUrl = (radarId = false, phenomenon, hideEdit = false) => {
   // eslint-disable-next-line
   return `${
     process.env.REACT_APP_PUBLIC_URL
-  }/node/${radarId}?issue=${uuid}&map_id=${radarId}&source_position=right&source_page=radar-view${
+  }/node/${radarId}?issue=${id}&map_id=${radarId}&source_position=right&source_page=radar-view${
     groupUrl.length ? `&${groupUrl}` : ""
   }${hideEdit ? "&hideEdit=true" : ""}`
 }
