@@ -18,38 +18,38 @@ const sortedTypes = types => {
   return types
 }
 
-export const usePhenomenonTypes = (groupId) => {
-  const [phenomenonTypes, setPhenomenonTypes] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+export const usePhenomenonTypes = groupId => {
+  const [phenomenonTypes, setPhenomenonTypes] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
-  const handleFetch = async () => {
-    setLoading(true);
-    setError(null);
+  const handleFetch = async (groupId) => {
+    setLoading(true)
+    setError(null)
 
     try {
-      setPhenomenonTypes(await drupalApi.getPhenomenaTypes(groupId));
+      setPhenomenonTypes(await drupalApi.getPhenomenaTypes(groupId))
     } catch (e) {
-      setError(e);
+      setError(e)
     }
 
-    setLoading(false);
+    setLoading(false)
   };
 
   useEffect(() => {
-    handleFetch();
-  }, []);
+    handleFetch(groupId)
+  }, [groupId])
 
   return {
     phenomenonTypes: sortedTypes(phenomenonTypes),
     phenomenonTypesById: keyBy(phenomenonTypes, "id"),
     loading,
     error
-  };
-};
+  }
+}
 
 export const PhenomenonTypeLoader = ({ children }) => {
-  const loader = usePhenomenonTypes();
+  const loader = usePhenomenonTypes()
 
-  return children(loader);
-};
+  return children(loader)
+}

@@ -1,11 +1,11 @@
-import React, {Fragment, useState} from 'react'
+import React, { Fragment, useState, useEffect } from 'react'
 import {
     requestTranslation,
     getAvailableLanguages,
     getLanguage
 } from '@sangre-fp/i18n'
 import {Formik} from 'formik'
-import {map, differenceBy, find} from 'lodash-es'
+import {map, differenceBy, find, capitalize} from 'lodash-es'
 import Select from 'react-select'
 import styled from 'styled-components'
 import {SortableContainer, SortableElement} from 'react-sortable-hoc'
@@ -100,8 +100,16 @@ export const PhenomenonEditForm = ({
    onDelete
 }) => {
     phenomenon = phenomenon ? transformToLegacy(phenomenon) : null
-    const getValue = makeGetValue(phenomenon)
 
+    const getValue = makeGetValue(phenomenon)
+    const [deletingModalOpen, setDeletingModalOpen] = useState(false)
+    const [groupTypesValue, setGroupTypesValue] = useState(radar ? radar.groupId : getValue("group"))
+
+    const {
+        phenomenonTypes,
+        loading: loadingPhenomenonTypes,
+        error: errorPhenomenonTypes
+    } = usePhenomenonTypes(groupTypesValue)
 
     const {
         groups,
@@ -116,10 +124,8 @@ export const PhenomenonEditForm = ({
         error: errorFeedTags
     } = useFeedTags()
 
-    const [deletingModalOpen, setDeletingModalOpen] = useState(false)
-
-    const loading = loadingFeedTags || loadingPhenomenonTypes || loadingGroups
-    const error = errorFeedTags || errorPhenomenonTypes || errorGroups
+    const loading = loadingFeedTags || loadingGroups
+    const error = errorFeedTags || errorGroups
 
     if (loading) {
         return <div className="py-5 text-center">Loading...</div>
@@ -190,7 +196,6 @@ export const PhenomenonEditForm = ({
                 return errors
             }}
             onSubmit={async (values, {setSubmitting}) => {
-              console.log(values)
                 try {
                     const originalNewsFeeds = getValue("newsFeeds", [])
                     const addedNewsFeeds = differenceBy(
@@ -226,11 +231,10 @@ export const PhenomenonEditForm = ({
                   isSubmitting,
                   isValid
               }) => {
-                const {
-                    phenomenonTypes,
-                    loading: loadingPhenomenonTypes,
-                    error: errorPhenomenonTypes
-                } = usePhenomenonTypes( radar ? radar.groupId : getValue("group"))
+
+                useEffect(() => {
+                    setGroupTypesValue(values.group)
+                }, [values.group])
 
                 const addNewsFeed = () => {
                     if (!errors.newsFeedInput) {
@@ -373,16 +377,18 @@ export const PhenomenonEditForm = ({
                             <div className="modal-form-section">
                                 <h3>{requestTranslation("createPhenomenaFormTypeLabel")}</h3>
                                 <div className='d-flex flex-wrap'>
-                                    {map(phenomenonTypes, phenomenonType => (
-                                        <StateContainer key={phenomenonType.id}>
+                                    {loadingPhenomenonTypes && <div className="py-5 text-center">Loading...</div>}
+                                    {errorPhenomenonTypes && <div className="py-5 text-center text-danger">{error.message}</div>}
+                                    {!loadingPhenomenonTypes && !errorPhenomenonTypes && map(phenomenonTypes, ({ id, alias, groupType, title, style }) => (
+                                        <StateContainer key={id}>
                                             <PhenomenaState>
-                                                <PhenomenonType type={phenomenonType.alias} size={15}/>
+                                                <PhenomenonType type={alias} size={15} fill={style ? style.color : null} />
                                             </PhenomenaState>
                                             <Radiobox
                                                 name="type"
-                                                label={requestTranslation(phenomenonType.alias)}
-                                                value={phenomenonType.id}
-                                                checked={values.state.id === phenomenonType.id}
+                                                label={groupType ? capitalize(title) : requestTranslation(alias)}
+                                                value={id}
+                                                checked={values.state.id === id}
                                                 onClick={setState}
                                                 className='phenomena-radiobox'
                                             />
