@@ -193,7 +193,6 @@ export const PhenomenonEditForm = ({
                 return errors
             }}
             onSubmit={async (values, {setSubmitting}) => {
-              console.log(values)
                 try {
                     const originalNewsFeeds = getValue("newsFeeds", [])
                     const addedNewsFeeds = differenceBy(
@@ -303,6 +302,8 @@ export const PhenomenonEditForm = ({
                         </div>
                     )
                 }
+
+                console.log(values)
 
                 return (
                     <div>
@@ -515,7 +516,7 @@ export const PhenomenonEditForm = ({
                                     <h3 className='mb-0'>
                                         {requestTranslation("media")}
                                         <DropdownValue>
-                                            {values.video || values.image ? requestTranslation('mediaUploaded') : requestTranslation('noMediaUploaded')}
+                                            {(values.video || values.image || values.imageUrl) ? requestTranslation('mediaUploaded') : requestTranslation('noMediaUploaded')}
                                         </DropdownValue>
                                     </h3>
                                     <i className='material-icons'>
@@ -542,9 +543,7 @@ export const PhenomenonEditForm = ({
                                     <div className="form-group">
                                         <h4>{requestTranslation("image")}</h4>
                                         <SelectImageContainer>
-                                            {!values.imageUrl &&
-                                            !values.image &&
-                                            requestTranslation("noImageSelected")}
+                                            {!values.imageUrl && !values.image && requestTranslation("noImageSelected")}
                                             {(values.imageUrl || values.image) && (
                                                 <div
                                                     className="position-relative w-100"
