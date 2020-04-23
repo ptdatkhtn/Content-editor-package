@@ -1,18 +1,23 @@
 import { useState, useEffect } from "react"
 import drupalApi from "@sangre-fp/connectors/drupal-api"
-import { keyBy, sortBy } from "lodash-es"
+import { keyBy, sortBy, times } from "lodash-es"
 
-// This is definitely not the best way to do this ... fix when you think of a better way
 const sortedTypes = types => {
   if (types.length) {
-    types[1].order = 1
-    types[3].order = 4
-    types[0].order = 6
-    types[4].order = 5
-    types[5].order = 3
-    types[2].order = 2
+    const customTypes = [...types]
+    const defaultTypes = types.slice(Math.max(types.length - 6, 0))
 
-    return sortBy(types, 'order')
+    defaultTypes[1].order = 1
+    defaultTypes[3].order = 4
+    defaultTypes[0].order = 6
+    defaultTypes[4].order = 5
+    defaultTypes[5].order = 3
+    defaultTypes[2].order = 2
+
+    const sortedTypes = sortBy(defaultTypes, 'order')
+    customTypes.splice(customTypes.length - 6)
+
+    return [...customTypes, ...sortedTypes]
   }
 
   return types
