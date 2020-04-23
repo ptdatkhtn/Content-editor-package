@@ -60,7 +60,7 @@ class PhenomenonRow extends PureComponent {
     }
     const href = getPhenomenonUrl(listView ? false : radarId, phenomenon, true)
     const phenomenonType = phenomenaTypesById[type]
-      ? phenomenaTypesById[type].alias
+      ? phenomenaTypesById[type].alias || phenomenaTypesById[type]
       : "undefined"
 
     return (
@@ -423,7 +423,7 @@ class PhenomenaSelectorLegacy extends PureComponent {
 }
 
 const PhenomenaSelector = props => {
-  const { phenomenonTypesById, loading, error } = usePhenomenonTypes()
+  const { phenomenonTypesById, loading, error } = usePhenomenonTypes(props.group.id)
 
   if (loading) {
     return <div className="py-5">Loading...</div>
