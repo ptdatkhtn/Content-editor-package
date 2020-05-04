@@ -38,7 +38,7 @@ import {useFeedTags} from './useFeedTags'
 import linkVal from "@sangre-fp/reducers/radarSets"
 
 const makeGetValue = phenomenon => (field, defaultValue = null) =>
-    (phenomenon && phenomenon[field]) ?? defaultValue
+    (phenomenon && phenomenon[field]) ? phenomenon[field] : defaultValue
 
 const getType = type =>
     type && {
