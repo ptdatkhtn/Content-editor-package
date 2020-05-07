@@ -323,7 +323,7 @@ export const PhenomenonEditForm = ({
                                         {!radar && (
                                             <div className='col-6'>
                                                 <div className='form-group'>
-                                                    <h4>{requestTranslation("group")}</h4>
+                                                    <h3>{requestTranslation("group")}</h3>
                                                     <Select
                                                         name="group"
                                                         className="fp-radar-select fp-radar-select--no-margin w-100"
@@ -347,7 +347,7 @@ export const PhenomenonEditForm = ({
                                         )}
                                         <div className='col-6'>
                                             <div className="form-group">
-                                                <h4>{requestTranslation("language")}</h4>
+                                                <h3>{requestTranslation("language")}</h3>
                                                 <Select
                                                     name="language"
                                                     className="fp-radar-select fp-radar-select--no-margin w-100"
