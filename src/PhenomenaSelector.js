@@ -217,10 +217,9 @@ class PhenomenaSelectorLegacy extends PureComponent {
     } = this.state
 
     const { group } = this.props
+    const groupId = group || 0
+    const searchGroups = selectedGroupId === ALL_GROUP_VALUE || selectedGroupId === 0 ? [0] : []
 
-    const groupId = group ? group.id : 0
-    const searchGroups =
-      selectedGroupId === ALL_GROUP_VALUE || selectedGroupId === 0 ? [0] : []
     if (selectedGroupId === ALL_GROUP_VALUE && groupId) {
       searchGroups.push(groupId)
     } else if (selectedGroupId > 0) {
