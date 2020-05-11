@@ -11,6 +11,7 @@ import styled from 'styled-components'
 import {SortableContainer, SortableElement} from 'react-sortable-hoc'
 import PhenomenaSelector from './PhenomenaSelector'
 import PhenomenaTimingEditor from './PhenomenaTimingEditor'
+import PhenomenonTypeRadiobox from './PhenomenonTypeRadiobox'
 import PhenomenaLinks from './PhenomenaLinks'
 import {
     paddingModalStyles,
@@ -378,21 +379,16 @@ export const PhenomenonEditForm = ({
                                 <div className='d-flex flex-wrap'>
                                     {loadingPhenomenonTypes && <div className="py-5 text-center">Loading...</div>}
                                     {errorPhenomenonTypes && <div className="py-5 text-center text-danger">{error.message}</div>}
-                                    {!loadingPhenomenonTypes && !errorPhenomenonTypes && map(phenomenonTypes, ({ id, alias, groupType, title, style }) => (
-                                        <StateContainer key={id}>
-                                            <PhenomenaState>
-                                                <PhenomenonType type={alias} size={15} fill={style ? style.color : null} />
-                                            </PhenomenaState>
-                                            <Radiobox
-                                                name="type"
-                                                label={groupType ? capitalize(title) : requestTranslation(alias)}
-                                                value={id}
-                                                checked={values.state.id === id}
-                                                onClick={setState}
-                                                className='phenomena-radiobox'
-                                            />
-                                        </StateContainer>
+                                  <div className="custom-phenomenon-types">
+                                    {!loadingPhenomenonTypes && !errorPhenomenonTypes && phenomenonTypes.filter(t => Boolean(t.groupType)).map(({ id, title, style }) => (
+                                      <PhenomenonTypeRadiobox id={id} name="type" label={capitalize(title)} checked={values.state.id === id} style={style} onClick={setState} />
                                     ))}
+                                  </div>
+                                  <div className="public-phenomenon-types">
+                                    {!loadingPhenomenonTypes && !errorPhenomenonTypes && phenomenonTypes.filter(t => !t.groupType).map(({ id, alias, style }) => (
+                                      <PhenomenonTypeRadiobox id={id} name="type" type={alias} label={requestTranslation(alias)} checked={values.state.id === id} style={style} onClick={setState} />
+                                    ))}
+                                  </div>
                                 </div>
                             </div>
                             <div className="modal-form-section">
@@ -876,24 +872,6 @@ const Textarea = styled.textarea`
     font-size: 16px;
     min-height: 150px;
     border-radius: 1px;
-`
-
-const StateContainer = styled.div`
-    display: flex;
-    box-sizing: border-box;
-    min-height: 25px;
-    align-items: center;
-    width: 33.3%;
-    position: relative;
-`
-
-const PhenomenaState = styled.div`
-    display: flex;
-    flex-shrink: 0;
-    align-items: center;
-    position: absolute;
-    z-index: 10;
-    left: 26px;
 `
 
 const RadarImageCloseContainer = styled.div`
