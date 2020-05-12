@@ -422,10 +422,12 @@ class PhenomenaSelectorLegacy extends PureComponent {
 }
 
 const PhenomenaSelector = props => {
-  const { phenomenonTypesById, loading, error } = usePhenomenonTypes(props.group && props.group.id)
+  const { group } = props
+
+  const { phenomenonTypesById, loading, error } = usePhenomenonTypes(_.isObject(group) ? group.id : group)
 
   if (loading) {
-    return <div className="py-5">Loading...</div>
+    return <div className="py-5">{requestTranslation('loading')}</div>
   }
 
   if (error) {
