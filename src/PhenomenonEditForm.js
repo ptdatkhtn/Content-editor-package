@@ -379,12 +379,21 @@ export const PhenomenonEditForm = ({
                                 <div className='d-flex flex-wrap'>
                                     {loadingPhenomenonTypes && <div className="py-5 text-center">Loading...</div>}
                                     {errorPhenomenonTypes && <div className="py-5 text-center text-danger">{error.message}</div>}
-                                  <div className="custom-phenomenon-types">
+                                  <div className="custom-phenomenon-types"
+                                  style={   {
+                                      flexWrap: "wrap",
+                                      display: "flex",
+                                      width: "100%",
+                                      marginBottom: "20px"}}>
                                     {!loadingPhenomenonTypes && !errorPhenomenonTypes && phenomenonTypes.filter(t => Boolean(t.groupType)).map(({ id, title, style }) => (
                                       <PhenomenonTypeRadiobox id={id} name="type" label={capitalize(title)} checked={values.state.id === id} style={style} onClick={setState} />
                                     ))}
                                   </div>
-                                  <div className="public-phenomenon-types">
+                                  <div className="public-phenomenon-types"
+                                       style={   {
+                                           flexWrap: "wrap",
+                                           display: "flex",
+                                           width: "100%"}}>
                                     {!loadingPhenomenonTypes && !errorPhenomenonTypes && phenomenonTypes.filter(t => !t.groupType).map(({ id, alias, style }) => (
                                       <PhenomenonTypeRadiobox id={id} name="type" type={alias} label={requestTranslation(alias)} checked={values.state.id === id} style={style} onClick={setState} />
                                     ))}
