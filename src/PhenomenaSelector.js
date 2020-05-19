@@ -2,14 +2,21 @@ import _ from "lodash"
 import React, { PureComponent, Fragment } from "react"
 import styled from "styled-components"
 import Select from "react-select"
-import { Radiobox } from "@sangre-fp/ui"
 import { getAvailableLanguages, requestTranslation } from "@sangre-fp/i18n"
 import { getPhenomena } from "@sangre-fp/connectors/search-api"
 import statisticsApi from '@sangre-fp/connectors/statistics-api'
-import { CreateButton, SearchInput } from "@sangre-fp/ui"
+import {
+  Radiobox,
+  CreateButton,
+  SearchInput,
+  PhenomenonType,
+  Search,
+  OptionDropdown
+} from "@sangre-fp/ui"
 import { filter, map } from "lodash-es"
 import { usePhenomenonTypes } from "./usePhenomenonTypes"
 
+export const PUBLIC_GROUP_VALUE = 0
 export const ALL_GROUP_VALUE = -1
 
 const getPhenomenonUrl = (radarId = false, phenomenon, hideEdit = false) => {
@@ -50,7 +57,6 @@ class PhenomenonRow extends PureComponent {
       phenomenon,
       checked,
       radarId,
-      small,
       listView,
       phenomenaTypesById
     } = this.props
@@ -66,12 +72,10 @@ class PhenomenonRow extends PureComponent {
     return (
       <PhenomenaRow
         className={"public-phenomena-row"}
-        small={small}
         style={checked ? checkedStyle : null}
       >
         <PhenomenaRowContent onClick={this.handleClick}>
           <Radiobox
-            large={!small}
             className={"align-self-center"}
             label={short_title || title}
             value={id}
@@ -100,6 +104,55 @@ class PhenomenonRow extends PureComponent {
   }
 }
 
+class SandboxPhenomenonRow extends PureComponent {
+  render() {
+    const {
+      phenomenon,
+      checked,
+      radarId,
+      listView,
+      phenomenaTypesById,
+      onAddToRadarClick
+    } = this.props
+    let { content: { title, short_title, type, halo = false, id, time_range }, crowdSourcedValue } = phenomenon
+    if (!time_range) {
+      time_range = {}
+    }
+    const href = getPhenomenonUrl(listView ? false : radarId, phenomenon, true)
+    const phenomenonType = phenomenaTypesById[type]
+      ? phenomenaTypesById[type].alias || phenomenaTypesById[type]
+      : "undefined"
+
+    return (
+      <PhenomenaRow className={"public-phenomena-row"}>
+        <PhenomenaRowContent
+          className='d-flex align-items-center'
+          style={{ cursor: 'default' }}
+        >
+            <PhenomenonType
+                halo={halo}
+                type={phenomenonType}
+                size={16}
+                fill={phenomenonType.style ? phenomenonType.style.color : null}
+            />
+            <div className='ml-2 hoverable right' data-href={href}>
+              {short_title || title}
+            </div>
+        </PhenomenaRowContent>
+        <PhenomenaRowControls>
+          <i
+            className={"material-icons ml-auto hoverable"}
+            onClick={() => onAddToRadarClick(phenomenon)}
+            style={{ color: '#126995' }}
+          >
+            add_circle
+          </i>
+        </PhenomenaRowControls>
+      </PhenomenaRow>
+    )
+  }
+}
+
 class PhenomenaSelectorLegacy extends PureComponent {
   state = {
     textSearchValue: "",
@@ -110,11 +163,17 @@ class PhenomenaSelectorLegacy extends PureComponent {
     language: _.find(radarLanguagesWithAll(), {
       value: this.props.language || "all"
     }),
-    selectedGroupId: ALL_GROUP_VALUE
+    selectedGroup: { value: PUBLIC_GROUP_VALUE, label: requestTranslation("publicWord") },
+    filtersShown: false,
+    filterLanguagesShown: false,
+    filterGroupsShown: false
   }
   debounceTimeout = false
+  groups = []
 
-  handleLanguageChange = language => {
+  handleLanguageChange = e => {
+    const language = _.find(radarLanguagesWithAll(), { label: e.target.innerText })
+
     this.setState(
       {
         language,
@@ -126,16 +185,19 @@ class PhenomenaSelectorLegacy extends PureComponent {
     )
   }
 
-  handleGroupChange = selectedGroup =>
+  handleGroupChange = e => {
+    const selectedGroup = _.find(this.groups, { label: e.target.innerText })
+
     this.setState(
       {
-        selectedGroupId: selectedGroup.value,
+        selectedGroup,
         page: 0,
         phenomenaList: [],
         totalPages: 0
       },
       this.fetchPhenomenaList
     )
+  }
 
   handleScroll = e => {
     const { page, totalPages, loading } = this.state
@@ -150,17 +212,38 @@ class PhenomenaSelectorLegacy extends PureComponent {
   }
 
   handleTextSearchChange = ({ target }) =>
-    this.setState(
-      {
-        textSearchValue: target.value,
-        page: 0,
-        phenomenaList: [],
-        totalPages: 0
-      },
+    this.setState({
+      textSearchValue: target.value,
+      page: 0,
+      phenomenaList: [],
+      totalPages: 0
+    },
+      this.fetchPhenomenaList
+    )
+
+  handleTextSearchClear = () =>
+    this.setState({
+      textSearchValue: '',
+      page: 0,
+      phenomenaList: [],
+      totalPages: 0
+    },
       this.fetchPhenomenaList
     )
 
   componentDidMount() {
+    const { group } = this.props
+
+
+    this.groups = [
+      { value: -1, label: requestTranslation("all") },
+      { value: 0, label: requestTranslation("publicWord") }
+    ]
+
+    if (group) {
+      this.groups.push({ value: group.id, label: group.title })
+    }
+
     this.fetchPhenomenaList()
   }
 
@@ -211,19 +294,20 @@ class PhenomenaSelectorLegacy extends PureComponent {
     const {
       phenomenaList,
       language: { value: language },
-      selectedGroupId,
+      selectedGroup,
       textSearchValue,
       page
     } = this.state
 
     const { group } = this.props
     const groupId = (group && typeof group === 'object' && group.id) || group || 0
-    const searchGroups = selectedGroupId === ALL_GROUP_VALUE || selectedGroupId === 0 ? [0] : []
 
-    if (selectedGroupId === ALL_GROUP_VALUE && groupId) {
+    const searchGroups = selectedGroup.value === ALL_GROUP_VALUE || selectedGroup.value === PUBLIC_GROUP_VALUE ? [PUBLIC_GROUP_VALUE] : []
+
+    if (selectedGroup.value === ALL_GROUP_VALUE && groupId) {
       searchGroups.push(groupId)
-    } else if (selectedGroupId > 0) {
-      searchGroups.push(selectedGroupId)
+    } else if (selectedGroup.value > 0) {
+      searchGroups.push(selectedGroup.value)
     }
 
     this.setState({ loading: true }, () => {
@@ -276,147 +360,134 @@ class PhenomenaSelectorLegacy extends PureComponent {
   renderSearchResults = () => {
     const {
       radarId,
-      small,
       listView,
       phenomenaTypesById,
-      phenomena: excludedPhenomena
+      phenomena: excludedPhenomena,
+      onAddToRadarClick,
+      sandbox,
+      group
     } = this.props
     const { phenomenaList } = this.state
-
     const excludedPhenomenonUuids = map(excludedPhenomena, p => p.id)
     const filteredList = filter(
       phenomenaList,
       p => !excludedPhenomenonUuids.includes(p.id)
     )
 
-    if (filteredList.length) {
-      return filteredList.map(phenomenon => {
-        const { id } = phenomenon
+    return (
+      <div>
+        {filteredList.map(phenomenon => {
+          const { id } = phenomenon
 
-        return (
-          <PhenomenonRow
-            phenomenaTypesById={phenomenaTypesById}
-            listView={listView}
-            key={id}
-            small={small}
-            onSelect={this.props.onSelect}
-            phenomenon={phenomenon}
-            checked={this.isChecked(phenomenon)}
-            radarId={radarId}
-          />
-        )
-      })
+          return sandbox ? (
+            <SandboxPhenomenonRow
+              phenomenaTypesById={phenomenaTypesById}
+              listView={listView}
+              key={id}
+              onSelect={this.props.onSelect}
+              phenomenon={phenomenon}
+              checked={this.isChecked(phenomenon)}
+              radarId={radarId}
+              onAddToRadarClick={onAddToRadarClick}
+            />
+          ) : (
+            <PhenomenonRow
+              phenomenaTypesById={phenomenaTypesById}
+              listView={listView}
+              key={id}
+              onSelect={this.props.onSelect}
+              phenomenon={phenomenon}
+              checked={this.isChecked(phenomenon)}
+              radarId={radarId}
+            />
+          )
+        })}
+      </div>
+    )
+
+    if (!filteredList.length) {
+      return <p className="ml-4 mt-2 description">No Results found</p>
     }
-
-    return <p className="ml-4 mt-2 description">No Results found</p>
   }
 
   render() {
-    const { onCreate, small, filter, group } = this.props
-    const { textSearchValue, loading, language, selectedGroupId } = this.state
-    const searchStyle = onCreate ? { marginRight: "0", marginTop: "0" } : null
-    const groups = [
-      { value: -1, label: requestTranslation("all") },
-      { value: 0, label: requestTranslation("publicWord") }
-    ]
-    if (group) {
-      groups.push({ value: group.id, label: group.title })
-    }
+    const { onCreate, filter, group, sandbox } = this.props
+    const {
+      textSearchValue,
+      loading,
+      language,
+      selectedGroup,
+      filtersShown,
+      filterLanguagesShown,
+      filterGroupsShown
+    } = this.state
 
     return (
-      <Fragment>
-        <SearchRow className={"phenomena-list-filters"}>
-          {filter && (
-            <h4 className={"language-filter-title"}>
-              {requestTranslation("filterPhenomena")}
-            </h4>
-          )}
-          <div className={"filter-col"}>
-            <SearchInput
-              type={"search"}
-              small={small}
-              className={"form-control-sm"}
-              style={searchStyle}
-              placeholder={requestTranslation("searchByKeywords")}
-              value={textSearchValue}
-              onChange={this.handleTextSearchChange}
-            />
-          </div>
-          {filter && (
-            <Fragment>
-              <div className={"filter-col"}>
-                <div key={"language-filter"} className={"language-filter"}>
-                  <div>
-                    <h5 className={"dropdown-filter-title"}>
-                      {requestTranslation("group")}
-                    </h5>
-                    <Select
-                      name="group"
-                      className="fp-radar-select"
-                      value={selectedGroupId}
-                      onChange={this.handleGroupChange}
-                      options={groups}
-                      searchable={false}
-                      clearable={false}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className={"filter-col"}>
-                <div key={"language-filter"} className={"language-filter"}>
-                  <div>
-                    <h5 className={"dropdown-filter-title"}>
-                      {requestTranslation("language")}
-                    </h5>
-                    <Select
-                      name="language"
-                      className="fp-radar-select"
-                      value={language.value}
-                      onChange={this.handleLanguageChange}
-                      options={radarLanguagesWithAll()}
-                      searchable={false}
-                      clearable={false}
-                    />
-                  </div>
-                </div>
-              </div>
-            </Fragment>
-          )}
-          {onCreate && (
-            <div className={"filter-col"}>
-              <div className={"create-new-phenomenon-container"}>
-                <SubTitle>{requestTranslation("createNewLabel")}</SubTitle>
-                <CreateButton
-                  onClick={onCreate}
-                  className={"btn btn-outline-secondary"}
-                >
-                  {requestTranslation("createNew")}
-                </CreateButton>
-              </div>
-            </div>
-          )}
-        </SearchRow>
-        <SearchResultsList
-          small={small}
-          className={"public-phenomena-list"}
-          onScroll={this.handleScroll}
-        >
-          {this.renderSearchResults()}
-          {loading ? (
-            <Loading
-              className={"loading-overlay"}
+      <div className='d-flex w-100 flex-column'>
+        <div className='d-flex align-items-center w-100 mb-3'>
+          <FilterButton
+            onClick={() => this.setState({ filtersShown: !filtersShown })}
+            className='btn-round d-flex align-items justify-content-center mr-2'>
+            <i
+              className='material-icons d-flex align-items-center justify-content-center'
               style={{
-                height: !filter ? "300px" : "100%",
-                top: !filter ? "0px" : "0px"
-              }}
-            >
-              <label style={{ color: "white", fontSize: "1.4em" }}>
-                Loading...
-              </label>
-            </Loading>
-          ) : null}
+                fontSize: '18px',
+                transform: 'rotate(-90deg)',
+                fontWeight: 'bold'
+            }}>
+              tune
+            </i>
+          </FilterButton>
+          <Search
+            className='mt-0 phenomena-list-search mb-0'
+            value={textSearchValue}
+            onChange={this.handleTextSearchChange}
+            onClear={this.handleTextSearchClear}
+          />
+        </div>
+        {filtersShown && (
+          <Fragment>
+            <div className='w-100 mb-3'>
+              <OptionDropdown
+                  label={requestTranslation('language')}
+                  title={language.label}
+                  onTabClick={() => this.setState({ filterLanguagesShown: !filterLanguagesShown })}
+                  type={'radio'}
+                  optionsShown={filterLanguagesShown}
+                  options={radarLanguagesWithAll()}
+                  selectedOption={language}
+                  handleOptionSelect={this.handleLanguageChange}
+              />
+            </div>
+            <div className='w-100 mb-3'>
+              <OptionDropdown
+                  label={requestTranslation('group')}
+                  title={selectedGroup.label}
+                  onTabClick={() => this.setState({ filterGroupsShown: !filterGroupsShown })}
+                  type={'radio'}
+                  optionsShown={filterGroupsShown}
+                  options={this.groups}
+                  selectedOption={selectedGroup}
+                  handleOptionSelect={this.handleGroupChange}
+              />
+            </div>
+            {/* <div className='w-100 mb-3'> */}
+            {/*   <button */}
+            {/*     onClick={null} */}
+            {/*     className='btn btn-outline-secondary w-100' */}
+            {/*   > */}
+            {/*     {requestTranslation("resetFilters")} */}
+            {/*   </button> */}
+            {/* </div> */}
+          </Fragment>
+        )}
+        <SearchResultsList onScroll={this.handleScroll}>
+          {this.renderSearchResults()}
+          {loading && (
+            <div className="py-2 pl-2">{requestTranslation('loading')}</div>
+          )}
         </SearchResultsList>
-      </Fragment>
+      </div>
     )
   }
 }
@@ -427,11 +498,11 @@ const PhenomenaSelector = props => {
   const { phenomenonTypesById, loading, error } = usePhenomenonTypes(_.isObject(group) ? group.id : group)
 
   if (loading) {
-    return <div className="py-5">{requestTranslation('loading')}</div>
+    return <div className="pl-2 py-2">{requestTranslation('loading')}</div>
   }
 
   if (error) {
-    return <div className="py-5">{error.message}</div>
+    return <div className="pl-2 py-2">{error.message}</div>
   }
 
   return (
@@ -468,16 +539,32 @@ const SubTitle = styled.h5`
 `;
 
 const SearchResultsList = styled.div`
-  width: ${({ small }) => (small ? "100%" : "100%")};
+  width: 100%;
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
   margin-top: 0;
-  border: 1px solid #d5dbdf;
+  border: 1px solid #E9ECEC;
+  /*background-color: white;*/
+  border-right: 0;
+  border-radius: 5px;
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #C8C8C9;
+    border-radius: 20px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: white;
+    border-radius: 20px;
+  }
 `;
 
 const PhenomenaRowContent = styled.div`
-  padding: 0 20px;
+  padding: 0 10px;
   height: 100%;
   display: flex;
   flex: 1 1 100%;
@@ -487,7 +574,7 @@ const PhenomenaRowContent = styled.div`
 const PhenomenaRowControls = styled.div`
   flex: 0;
   display: flex;
-  padding: 0 20px;
+  padding: 0 10px;
   @media (max-width: 1100px) {
     padding: 0;
   }
@@ -496,11 +583,12 @@ const PhenomenaRowControls = styled.div`
 const PhenomenaRow = styled.div`
   display: flex;
   width: 100%;
-  min-height: ${({ small }) => (small ? "45px" : "45px")};
+  min-height: 45px;
   padding: 8px 0;
   box-sizing: border-box;
   align-items: center;
-  border-bottom: 1px solid #d5dbdf;
+  border-bottom: 1px solid #E9ECEC;
+  background-color: white;
 `;
 
 const ShowPhenomenonIcon = styled.span`
@@ -508,3 +596,9 @@ const ShowPhenomenonIcon = styled.span`
   display: inline-block;
   vertical-align: middle;
 `;
+
+const FilterButton = styled.div`
+  width: 38px !important;
+  height: 38px !important;
+  flex-shrink: 0;
+`
