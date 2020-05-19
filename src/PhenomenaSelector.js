@@ -283,7 +283,7 @@ class PhenomenaSelectorLegacy extends PureComponent {
       const newPhenomena = _.map(newFilteredPhenomena, phenomenonDoc => ({
         ...phenomenonDoc,
         crowdSourcedValue: statistics[phenomenonDoc.id] ?
-            _.round(statistics[phenomenonDoc.id].year_median, 2) : null
+            _.round(statistics [phenomenonDoc.id].year_median, 2).toFixed(2) : null
       }))
 
       return _.uniqBy([...phenomenaList, ...newPhenomena], 'id')
