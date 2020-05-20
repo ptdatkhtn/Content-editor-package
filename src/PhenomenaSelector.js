@@ -423,21 +423,23 @@ class PhenomenaSelectorLegacy extends PureComponent {
     } = this.state
 
     return (
-      <div className='d-flex w-100 flex-column'>
+      <div className='d-flex w-100 flex-column' style={{ overflow: 'auto' }}>
         <div className='d-flex align-items-center w-100 mb-3'>
-          <FilterButton
-            onClick={() => this.setState({ filtersShown: !filtersShown })}
-            className='btn-round d-flex align-items justify-content-center mr-2'>
-            <i
-              className='material-icons d-flex align-items-center justify-content-center'
-              style={{
-                fontSize: '18px',
-                transform: 'rotate(-90deg)',
-                fontWeight: 'bold'
-            }}>
-              tune
-            </i>
-          </FilterButton>
+          {sandbox && (
+            <FilterButton
+              onClick={() => this.setState({ filtersShown: !filtersShown })}
+              className='btn-round d-flex align-items justify-content-center mr-2'>
+              <i
+                className='material-icons d-flex align-items-center justify-content-center'
+                style={{
+                  fontSize: '18px',
+                  transform: 'rotate(-90deg)',
+                  fontWeight: 'bold'
+              }}>
+                tune
+              </i>
+            </FilterButton>
+          )}
           <Search
             className='mt-0 phenomena-list-search mb-0'
             value={textSearchValue}
