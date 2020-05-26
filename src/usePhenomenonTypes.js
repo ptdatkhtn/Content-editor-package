@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import drupalApi from "@sangre-fp/connectors/drupal-api"
-import { keyBy, sortBy, times } from "lodash-es"
+import { keyBy, sortBy } from "lodash-es"
 
 const sortedTypes = types => {
   if (types.length) {
