@@ -2,7 +2,7 @@ import _ from "lodash"
 import React, { PureComponent, Fragment } from "react"
 import styled from "styled-components"
 import Select from "react-select"
-import { getAvailableLanguages, requestTranslation } from "@sangre-fp/i18n"
+import { radarLanguagesWithAll, requestTranslation } from "@sangre-fp/i18n"
 import { getPhenomena } from "@sangre-fp/connectors/search-api"
 import statisticsApi from '@sangre-fp/connectors/statistics-api'
 import {
@@ -37,11 +37,6 @@ const getPhenomenonUrl = (radarId = false, phenomenon, hideEdit = false) => {
     groupUrl.length ? `&${groupUrl}` : ""
   }${hideEdit ? "&hideEdit=true" : ""}`
 }
-
-export const radarLanguagesWithAll = () => [
-  { value: "all", label: requestTranslation("all") },
-  ...getAvailableLanguages()
-]
 
 const checkedStyle = { backgroundColor: "rgb(241, 244, 246)" }
 const PAGE_SIZE = 25
@@ -171,8 +166,8 @@ class PhenomenaSelectorLegacy extends PureComponent {
   debounceTimeout = false
   groups = []
 
-  handleLanguageChange = e => {
-    const language = _.find(radarLanguagesWithAll(), { label: e.target.innerText })
+  handleLanguageChange = lang => {
+    const language = _.find(radarLanguagesWithAll(), { value: lang.value })
 
     this.setState(
       {
