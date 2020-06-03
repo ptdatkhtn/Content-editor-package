@@ -237,9 +237,9 @@ class PhenomenaSelectorLegacy extends PureComponent {
       search,
       filtersActive
     } = filters
+    const { previousFilters, filtersShown } = this.state
     const { group } = this.props
     const groupId = (group && typeof group === 'object' && group.id) || group || 0
-
     const groups = selectedGroup.value === ALL_GROUP_VALUE || selectedGroup.value === PUBLIC_GROUP_VALUE ? [PUBLIC_GROUP_VALUE] : []
 
     if (selectedGroup.value === ALL_GROUP_VALUE && groupId) {
@@ -256,8 +256,12 @@ class PhenomenaSelectorLegacy extends PureComponent {
 
     let newState = {}
 
-    if (difference(filters, this.state.previousFilters).page) {
+    if (difference(filters, previousFilters).page) {
       newState = { loading: true, previousFilters: filters, filtersActive }
+
+      if (filtersShown) {
+        return
+      }
     } else {
       newState = {
         loading: true,
@@ -443,7 +447,7 @@ class PhenomenaSelectorLegacy extends PureComponent {
               onFilterChange={this.fetchPhenomenaList}
               countShown={false}
             />
-            <button className='btn btn-primary w-100 mt-2' onClick={() => this.setState({ filtersShown: false })}>
+            <button className='btn btn-primary w-100 mt-3' onClick={() => this.setState({ filtersShown: false })}>
               {requestTranslation('closeFilters')}
             </button>
           </div>
