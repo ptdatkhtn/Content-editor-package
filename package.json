@@ -1,12 +1,12 @@
 {
   "name": "@sangre-fp/content-editor",
-  "version": "2.0.16",
+  "version": "2.0.17",
   "main": "dist/index.umd.js",
   "module": "dist/index.modern.mjs",
   "license": "UNLICENSED",
   "dependencies": {
     "@sangre-fp/connectors": "^1.4.1",
-    "@sangre-fp/content-filters": "1.0.4",
+    "@sangre-fp/content-filters": "^1.0.5",
     "@sangre-fp/i18n": "^2.0.6",
     "@sangre-fp/ui": "^2.0.13",
     "formik": "^2.1.3",
