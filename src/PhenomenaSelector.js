@@ -14,7 +14,7 @@ import {
   Search,
   OptionDropdown
 } from '@sangre-fp/ui'
-import { filter, map } from 'lodash-es'
+import { filter, map, size } from 'lodash-es'
 import { usePhenomenonTypes } from './usePhenomenonTypes'
 
 export const PUBLIC_GROUP_VALUE = 0
@@ -173,10 +173,10 @@ class PhenomenaSelectorLegacy extends PureComponent {
   }
 
   handleScroll = e => {
-    const { page, totalPages, loading } = this.state
+    const { page, totalPages, loading, filtersShown } = this.state
     const bottom = e.target.scrollHeight - e.target.scrollTop - 25 < e.target.clientHeight
 
-    if (bottom && !loading && page < totalPages) {
+    if (bottom && !loading && page < totalPages && !filtersShown) {
       this.setState({ page: page + 1 })
     }
   }
@@ -256,9 +256,10 @@ class PhenomenaSelectorLegacy extends PureComponent {
 
     let newState = {}
 
-    if (difference(filters, previousFilters).page) {
-      newState = { loading: true, previousFilters: filters, filtersActive }
+    const diff = difference(filters, previousFilters)
 
+    if (diff.page && size(diff) === 1) {
+      newState = { loading: true, previousFilters: filters, filtersActive }
       if (filtersShown) {
         return
       }
