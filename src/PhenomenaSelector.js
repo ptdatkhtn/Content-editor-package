@@ -176,7 +176,7 @@ class PhenomenaSelectorLegacy extends PureComponent {
     const { page, totalPages, loading, filtersShown } = this.state
     const bottom = e.target.scrollHeight - e.target.scrollTop - 25 < e.target.clientHeight
 
-    if (bottom && !loading && page < totalPages && !filtersShown) {
+    if (bottom && !loading && page + 1 < totalPages && !filtersShown) {
       this.setState({ page: page + 1 })
     }
   }
@@ -269,7 +269,8 @@ class PhenomenaSelectorLegacy extends PureComponent {
         previousFilters: filters,
         totalPages: 0,
         phenomenaList: [],
-        filtersActive
+        filtersActive,
+        page: 0
       }
     }
 
