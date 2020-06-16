@@ -167,13 +167,13 @@ class PhenomenaSelectorLegacy extends PureComponent {
     loading: false,
     phenomenaList: [],
     totalPages: 0,
-    filtersShown: false,
     previousFilters: {},
     filtersActive: false
   }
 
   handleScroll = e => {
-    const { page, totalPages, loading, filtersShown } = this.state
+    const { page, totalPages, loading } = this.state
+    const { filtersShown } = this.props
     const bottom = e.target.scrollHeight - e.target.scrollTop - 25 < e.target.clientHeight
 
     if (bottom && !loading && page + 1 < totalPages && !filtersShown) {
@@ -237,8 +237,8 @@ class PhenomenaSelectorLegacy extends PureComponent {
       search,
       filtersActive
     } = filters
-    const { previousFilters, filtersShown } = this.state
-    const { group } = this.props
+    const { previousFilters } = this.state
+    const { group, filtersShown } = this.props
     const groupId = (group && typeof group === 'object' && group.id) || group || 0
     const groups = selectedGroup.value === ALL_GROUP_VALUE || selectedGroup.value === PUBLIC_GROUP_VALUE ? [PUBLIC_GROUP_VALUE] : []
 
@@ -383,11 +383,18 @@ class PhenomenaSelectorLegacy extends PureComponent {
   }
 
   render() {
-    const { onCreate, filter, group, sandbox } = this.props
+    const {
+      onCreate,
+      filter,
+      group,
+      sandbox,
+      filtersShown,
+      handleFilterChange,
+      resetFilters
+    } = this.props
     const {
       textSearchValue,
       loading,
-      filtersShown,
       page,
       totalPages,
       previousFilters,
@@ -402,7 +409,7 @@ class PhenomenaSelectorLegacy extends PureComponent {
         <div className='d-flex align-items-center w-100 mb-3'>
           {sandbox && (
             <FilterButton
-              onClick={() => this.setState({ filtersShown: !filtersShown })}
+              onClick={handleFilterChange}
               className={`btn-round d-flex align-items justify-content-center position-relative mr-3 ${filtersShown ? '' : 'inactive'}`}>
               {filtersActive && (
                 <FiltersActiveTag className='d-flex align-items-center justify-content-center'>
@@ -422,12 +429,19 @@ class PhenomenaSelectorLegacy extends PureComponent {
               </i>
             </FilterButton>
           )}
-          <Search
-            className='mt-0 phenomena-list-search mb-0'
-            value={textSearchValue}
-            onChange={this.handleTextSearchChange}
-            onClear={this.handleTextSearchClear}
-          />
+          {filtersShown ? (
+            <button className='btn btn-plain btn-sm ml-auto d-flex align-items-center justify-content-center' onClick={handleFilterChange}>
+              <i className='material-icons' style={{ fontSize: '16px'}}>close</i>
+              {requestTranslation('closeFilters')}
+            </button>
+          ) : (
+            <Search
+              className='mt-0 phenomena-list-search mb-0'
+              value={textSearchValue}
+              onChange={this.handleTextSearchChange}
+              onClear={this.handleTextSearchClear}
+            />
+          )}
         </div>
         {filtersShown && (
           <div className='text-center mb-3'>
@@ -448,10 +462,9 @@ class PhenomenaSelectorLegacy extends PureComponent {
               passedGroups={this.createGroups()}
               onFilterChange={this.fetchPhenomenaList}
               countShown={false}
+              resetShown={false}
+              manualFilterReset={resetFilters}
             />
-            <button className='btn btn-primary w-100 mt-3' onClick={() => this.setState({ filtersShown: false })}>
-              {requestTranslation('closeFilters')}
-            </button>
           </div>
           {!filtersShown && this.renderSearchResults()}
         </SearchResultsList>
