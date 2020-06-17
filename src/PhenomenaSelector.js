@@ -390,7 +390,8 @@ class PhenomenaSelectorLegacy extends PureComponent {
       sandbox,
       filtersShown,
       handleFilterChange,
-      resetFilters
+      resetFilters,
+      bumpResetFilters
     } = this.props
     const {
       textSearchValue,
@@ -449,8 +450,8 @@ class PhenomenaSelectorLegacy extends PureComponent {
               {loading ? requestTranslation('loading') : `${totalPages} ${requestTranslation('resultsFound')}`}
             </div>
             {!filtersShown && (
-              <button className='btn btn-plain btn-sm d-flex align-items-center justify-content-center' onClick={resetFilters}>
-                <i class='material-icons' style={{ fontSize: '16px' }}>close</i>
+              <button className='btn btn-plain btn-sm d-flex align-items-center justify-content-center' onClick={bumpResetFilters}>
+                <i className='material-icons mr-1' style={{ fontSize: '15px' }}>replay</i>
                 {requestTranslation('resetFilters')}
               </button>
             )}
