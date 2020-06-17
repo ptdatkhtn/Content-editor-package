@@ -410,7 +410,7 @@ class PhenomenaSelectorLegacy extends PureComponent {
           {sandbox && (
             <FilterButton
               onClick={handleFilterChange}
-              className={`btn-round d-flex align-items justify-content-center position-relative mr-3 ${filtersShown ? '' : 'inactive'}`}>
+              className={`btn-round d-flex align-items justify-content-center position-relative mr-3 ${filtersActive ? '' : 'inactive'}`}>
               {filtersActive && (
                 <FiltersActiveTag className='d-flex align-items-center justify-content-center'>
                   <i className='material-icons'>
@@ -443,9 +443,17 @@ class PhenomenaSelectorLegacy extends PureComponent {
             />
           )}
         </div>
-        {filtersShown && (
-          <div className='text-center mb-3'>
-            {loading ? requestTranslation('loading') : `${totalPages} ${requestTranslation('resultsFound')}`}
+        {(filtersShown || filtersActive) && (
+          <div className='d-flex align-items-center justify-content-between mb-3'>
+            <div style={{ fontSize: '12px' }}>
+              {loading ? requestTranslation('loading') : `${totalPages} ${requestTranslation('resultsFound')}`}
+            </div>
+            {!filtersShown && (
+              <button className='btn btn-plain btn-sm d-flex align-items-center justify-content-center'>
+                <i class='material-icons' style={{ fontSize: '16px' }}>close</i>
+                {requestTranslation('resetFilters')}
+              </button>
+            )}
           </div>
         )}
         <SearchResultsList
