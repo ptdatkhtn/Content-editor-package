@@ -4,6 +4,8 @@ import {
     getAvailableLanguages,
     getLanguage
 } from '@sangre-fp/i18n'
+import { usePhenomenonTypes, useEditableGroups, useFeedTags } from '@sangre-fp/hooks'
+import linkVal from '@sangre-fp/reducers/radarSets'
 import {Formik} from 'formik'
 import {map, differenceBy, find, capitalize} from 'lodash-es'
 import Select from 'react-select'
@@ -33,10 +35,6 @@ import {
 } from '@sangre-fp/connectors/phenomena-api'
 import PropTypes from 'prop-types'
 import ReactQuill from 'react-quill'
-import {usePhenomenonTypes} from './usePhenomenonTypes'
-import {useEditableGroups} from './useGroups'
-import {useFeedTags} from './useFeedTags'
-import linkVal from "@sangre-fp/reducers/radarSets"
 
 const makeGetValue = phenomenon => (field, defaultValue = null) =>
     (phenomenon && phenomenon.hasOwnProperty(field)) ? phenomenon[field] : defaultValue

@@ -1,8 +1,4 @@
-export { usePhenomenon, PhenomenonLoader } from "./usePhenomenon"
-export { usePhenomenonTypes, PhenomenonTypeLoader } from "./usePhenomenonTypes"
-export { useGroups, useEditableGroups, GroupsLoader, EditableGroupsLoader } from "./useGroups"
-export { useFeedTags, FeedTagsLoader } from "./useFeedTags"
-export { PhenomenonEditForm } from "./PhenomenonEditForm"
+export { PhenomenonEditForm } from './PhenomenonEditForm'
 export { RANGES, getRangeValueFromYear } from './PhenomenaTimingEditor'
 
-export { default as PhenomenaSelector } from "./PhenomenaSelector"
+export { default as PhenomenaSelector } from './PhenomenaSelector'

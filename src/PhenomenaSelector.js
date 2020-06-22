@@ -1,11 +1,24 @@
-import _ from "lodash"
-import React, { PureComponent, Fragment } from "react"
-import styled from "styled-components"
-import Select from "react-select"
-import { radarLanguagesWithAll, requestTranslation } from "@sangre-fp/i18n"
+import {
+  filter,
+  map,
+  size,
+  transform,
+  isEqual,
+  isObject,
+  uniqBy,
+  round,
+  get,
+  isArray,
+  find
+} from 'lodash-es'
+import React, { PureComponent, Fragment } from 'react'
+import styled from 'styled-components'
+import Select from 'react-select'
+import { radarLanguagesWithAll, requestTranslation } from '@sangre-fp/i18n'
 import { getPhenomena } from '@sangre-fp/connectors/search-api'
 import statisticsApi from '@sangre-fp/connectors/statistics-api'
 import ContentFilters from '@sangre-fp/content-filters'
+import { usePhenomenonTypes } from '@sangre-fp/hooks'
 import {
   Radiobox,
   CreateButton,
@@ -14,17 +27,15 @@ import {
   Search,
   OptionDropdown
 } from '@sangre-fp/ui'
-import { filter, map, size } from 'lodash-es'
-import { usePhenomenonTypes } from './usePhenomenonTypes'
 
 export const PUBLIC_GROUP_VALUE = 0
 export const ALL_GROUP_VALUE = -1
 
 function difference(object, base) {
   function changes(object, base) {
-    return _.transform(object, function(result, value, key) {
-      if (!_.isEqual(value, base[key])) {
-        result[key] = (_.isObject(value) && _.isObject(base[key])) ? changes(value, base[key]) : value
+    return transform(object, function(result, value, key) {
+      if (!isEqual(value, base[key])) {
+        result[key] = (isObject(value) && isObject(base[key])) ? changes(value, base[key]) : value
       }
     })
   }
@@ -215,15 +226,15 @@ class PhenomenaSelectorLegacy extends PureComponent {
   matchPhenomenaWithStatistics = (phenomenonDocuments, statistics) => {
     const { phenomenaList } = this.state
 
-      const newFilteredPhenomena = _.uniqBy([...phenomenonDocuments.filter(({ archived }) => !archived)], 'id')
+      const newFilteredPhenomena = uniqBy([...phenomenonDocuments.filter(({ archived }) => !archived)], 'id')
 
-      const newPhenomena = _.map(newFilteredPhenomena, phenomenonDoc => ({
+      const newPhenomena = map(newFilteredPhenomena, phenomenonDoc => ({
         ...phenomenonDoc,
         crowdSourcedValue: statistics[phenomenonDoc.id] ?
-            _.round(statistics [phenomenonDoc.id].year_median, 2).toFixed(2) : null
+            round(statistics [phenomenonDoc.id].year_median, 2).toFixed(2) : null
       }))
 
-      return _.uniqBy([...phenomenaList, ...newPhenomena], 'id')
+      return uniqBy([...phenomenaList, ...newPhenomena], 'id')
   }
 
   fetchPhenomenaList = filters => {
@@ -248,7 +259,7 @@ class PhenomenaSelectorLegacy extends PureComponent {
       groups.push(selectedGroup.value)
     }
 
-    let language = _.get(languageObj, 'value', null)
+    let language = get(languageObj, 'value', null)
 
     if (language === 'all') {
         language = null
@@ -321,8 +332,8 @@ class PhenomenaSelectorLegacy extends PureComponent {
       return false
     }
 
-    if (_.isArray(selectedPhenomena)) {
-      return selectedPhenomena.length > 0 && _.find(selectedPhenomena,p => p.id === id)
+    if (isArray(selectedPhenomena)) {
+      return selectedPhenomena.length > 0 && find(selectedPhenomena,p => p.id === id)
     }
     return id === selectedPhenomena.id
   }
@@ -485,7 +496,7 @@ class PhenomenaSelectorLegacy extends PureComponent {
 const PhenomenaSelector = props => {
   const { group } = props
 
-  const { phenomenonTypesById, loading, error } = usePhenomenonTypes(_.isObject(group) ? group.id : group)
+  const { phenomenonTypesById, loading, error } = usePhenomenonTypes(isObject(group) ? group.id : group)
 
   if (loading) {
     return <div className="pl-2 py-2">{requestTranslation('loading')}</div>
