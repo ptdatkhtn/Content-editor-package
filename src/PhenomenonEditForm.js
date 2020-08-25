@@ -179,7 +179,7 @@ export const PhenomenonEditForm = ({
 
                 if (
                     values.newsFeedInput.length &&
-                    !/^((https):\/\/)/.test(values.newsFeedInput)
+                    !/^https:\/\/|opoint:/.test(values.newsFeedInput)
                 ) {
                     errors.newsFeedInput = requestTranslation("newsFeedError")
                 }
