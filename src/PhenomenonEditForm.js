@@ -379,7 +379,7 @@ export const PhenomenonEditForm = ({
                                }}>
                             {!loadingPhenomenonTypes && !errorPhenomenonTypes && phenomenonTypes.filter(t => Boolean(t.groupType)).map(({ id, title, style }) => (
                               <PhenomenonTypeRadiobox id={id} name="type" label={capitalize(title)}
-                                                      checked={values.state.id === id} style={style}
+                                                      checked={values.state?.id === id} style={style}
                                                       onClick={setState}/>
                             ))}
                           </div>
@@ -391,7 +391,7 @@ export const PhenomenonEditForm = ({
                                }}>
                             {!loadingPhenomenonTypes && !errorPhenomenonTypes && phenomenonTypes.filter(t => !t.groupType).map(({ id, alias, style }) => (
                               <PhenomenonTypeRadiobox id={id} name="type" type={alias} label={requestTranslation(alias)}
-                                                      checked={values.state.id === id} style={style}
+                                                      checked={values.state?.id === id} style={style}
                                                       onClick={setState}/>
                             ))}
                           </div>
