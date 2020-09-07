@@ -127,12 +127,6 @@ export const PhenomenonEditForm = ({
         return <div className="py-5 text-center text-danger">{error.message}</div>
     }
 
-    const initialState = getValue("state", phenomenonTypes[0])
-    const initialType = find(
-        phenomenonTypes,
-        type => type.id === initialState.id
-    )
-
     return (
         <Formik
             initialValues={{
@@ -142,7 +136,7 @@ export const PhenomenonEditForm = ({
                 title: getValue("title", ""),
                 shortTitle: getValue("shortTitle", ""),
                 lead: getValue("lead", ""),
-                state: initialType || phenomenonTypes[0],
+                state: getValue("state", phenomenonTypes[0]),
                 video: getValue("videoUrl", ""),
                 image: null,
                 imageUrl: getValue("imageUrl"),
@@ -379,7 +373,7 @@ export const PhenomenonEditForm = ({
                                }}>
                             {!loadingPhenomenonTypes && !errorPhenomenonTypes && phenomenonTypes.filter(t => Boolean(t.groupType)).map(({ id, title, style }) => (
                               <PhenomenonTypeRadiobox id={id} name="type" label={capitalize(title)}
-                                                      checked={values.state?.id === id} style={style}
+                                                      checked={values.state.id === id} style={style}
                                                       onClick={setState}/>
                             ))}
                           </div>
