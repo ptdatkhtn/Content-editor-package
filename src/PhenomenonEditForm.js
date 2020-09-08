@@ -5,7 +5,6 @@ import {
     getLanguage
 } from '@sangre-fp/i18n'
 import { usePhenomenonTypes, useEditableGroups } from '@sangre-fp/hooks'
-import linkVal from '@sangre-fp/reducers/radarSets'
 import {Formik} from 'formik'
 import {map, differenceBy, find, capitalize} from 'lodash-es'
 import Select from 'react-select'
@@ -23,9 +22,6 @@ import {
     SelectImageButton,
     SelectImageInput,
     SelectImageInputContainer,
-    PhenomenonType,
-    Radiobox,
-    MaterialIcon,
     quillFormats,
     quillModules
 } from '@sangre-fp/ui'
@@ -38,13 +34,6 @@ import ReactQuill from 'react-quill'
 
 const makeGetValue = phenomenon => (field, defaultValue = null) =>
     (phenomenon && phenomenon.hasOwnProperty(field)) ? phenomenon[field] : defaultValue
-
-const getType = type =>
-    type && {
-        id: type.id,
-        title: type.title,
-        issue_state: type.issue_state
-    }
 
 const SortableRelatedPhenomena = SortableElement(
     ({relatedPhenom, onSelect}) => {
@@ -91,13 +80,15 @@ const SortableRelatedPhenomenaList = SortableContainer(
     }
 )
 
-export const PhenomenonEditForm = ({
-   phenomenon: basePhenomenon,
-   radar,
-   onCancel,
-   onSubmit,
-   onDelete
-}) => {
+export const PhenomenonEditForm = (
+  {
+    phenomenon: basePhenomenon,
+    radar,
+    onCancel,
+    onSubmit,
+    onDelete
+  }
+) => {
     const phenomenon = basePhenomenon ? transformToLegacy(basePhenomenon) : null
     const getValue = makeGetValue(phenomenon)
     const [deletingModalOpen, setDeletingModalOpen] = useState(false)
@@ -136,7 +127,7 @@ export const PhenomenonEditForm = ({
                 title: getValue("title", ""),
                 shortTitle: getValue("shortTitle", ""),
                 lead: getValue("lead", ""),
-                state: getValue("state", phenomenonTypes[0]),
+                phenomenonType: getValue("phenomenonType", ""),
                 video: getValue("videoUrl", ""),
                 image: null,
                 imageUrl: getValue("imageUrl"),
@@ -231,15 +222,13 @@ export const PhenomenonEditForm = ({
                     }
                 }
 
-                const setState = ({
-                                      target: {
-                                          previousSibling: {value}
-                                      }
-                                  }) => {
-                    setFieldValue(
-                        "state",
-                        getType(find(phenomenonTypes, t => t.id === value))
-                    )
+                const setPhenomenonType = (
+                  {
+                    target: {
+                      previousSibling: { value }
+                    }
+                  }) => {
+                  setFieldValue('phenomenonType', value)
                 }
 
                 const toggleRelatedPhenomenon = phenomenon => {
@@ -372,10 +361,11 @@ export const PhenomenonEditForm = ({
                                  marginBottom: '20px'
                                }}>
                             {!loadingPhenomenonTypes && !errorPhenomenonTypes && phenomenonTypes.filter(t => Boolean(t.groupType)).map(({ id, title, style }) => (
-                              <PhenomenonTypeRadiobox id={id} name="type" label={capitalize(title)}
-                                                      checked={values.state.id === id} style={style}
-                                                      onClick={setState}/>
-                            ))}
+                              <PhenomenonTypeRadiobox key={id} id={id} name="type" label={capitalize(title)}
+                                                      checked={values.phenomenonType === id} style={style}
+                                                      onClick={setPhenomenonType}/>
+                              )
+                            )}
                           </div>
                           <div className="public-phenomenon-types"
                                style={{
@@ -383,11 +373,13 @@ export const PhenomenonEditForm = ({
                                  display: 'flex',
                                  width: '100%'
                                }}>
-                            {!loadingPhenomenonTypes && !errorPhenomenonTypes && phenomenonTypes.filter(t => !t.groupType).map(({ id, alias, style }) => (
-                              <PhenomenonTypeRadiobox id={id} name="type" type={alias} label={requestTranslation(alias)}
-                                                      checked={values.state?.id === id} style={style}
-                                                      onClick={setState}/>
-                            ))}
+                            {!loadingPhenomenonTypes && !errorPhenomenonTypes && phenomenonTypes.filter(t => !t.groupType).map(({ id, alias, style }, i) => (
+                                <PhenomenonTypeRadiobox id={id} name="phenomenonType" type={alias}
+                                                        label={requestTranslation(alias)}
+                                                        checked={values.phenomenonType === id} style={style}
+                                                        onClick={setPhenomenonType}/>
+                              )
+                            )}
                           </div>
                         </div>
                       </div>
