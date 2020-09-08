@@ -92,13 +92,13 @@ export const PhenomenonEditForm = (
     const phenomenon = basePhenomenon ? transformToLegacy(basePhenomenon) : null
     const getValue = makeGetValue(phenomenon)
     const [deletingModalOpen, setDeletingModalOpen] = useState(false)
-    const [groupTypesValue, setGroupTypesValue] = useState(radar ? radar.groupId : getValue("group"))
+    const [groupId, setGroupId] = useState(radar ? radar.groupId : getValue("group"))
 
     const {
         phenomenonTypes,
         loading: loadingPhenomenonTypes,
         error: errorPhenomenonTypes
-    } = usePhenomenonTypes(groupTypesValue)
+    } = usePhenomenonTypes(groupId)
 
     const {
         groups,
@@ -127,7 +127,7 @@ export const PhenomenonEditForm = (
                 title: getValue("title", ""),
                 shortTitle: getValue("shortTitle", ""),
                 lead: getValue("lead", ""),
-                phenomenonType: getValue("phenomenonType", ""),
+                phenomenonType: getValue("phenomenonType", "43fa863e-26ca-470c-8588-cf162cba08b5") || "43fa863e-26ca-470c-8588-cf162cba08b5",
                 video: getValue("videoUrl", ""),
                 image: null,
                 imageUrl: getValue("imageUrl"),
@@ -207,9 +207,9 @@ export const PhenomenonEditForm = (
                   isSubmitting,
                   isValid
               }) => {
-
+                console.log(values.phenomenonType)
                 useEffect(() => {
-                    setGroupTypesValue(values.group)
+                    setGroupId(values.group)
                 }, [values.group])
 
                 const addNewsFeed = () => {
