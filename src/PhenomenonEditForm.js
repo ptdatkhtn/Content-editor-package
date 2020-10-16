@@ -216,7 +216,6 @@ export const PhenomenonEditForm = (
                   isSubmitting,
                   isValid
               }) => {
-                console.log(values.phenomenonType)
                 useEffect(() => {
                     setGroupId(values.group)
                 }, [values.group])
@@ -383,7 +382,7 @@ export const PhenomenonEditForm = (
                                  width: '100%'
                                }}>
                             {!loadingPhenomenonTypes && !errorPhenomenonTypes && phenomenonTypes.filter(t => !t.groupType).map(({ id, alias, style }, i) => (
-                                <PhenomenonTypeRadiobox id={id} name="phenomenonType" type={alias}
+                                <PhenomenonTypeRadiobox id={id} name="phenomenonType" type={alias} key={id}
                                                         label={requestTranslation(alias)}
                                                         checked={values.phenomenonType === id} style={style}
                                                         onClick={setPhenomenonType}/>

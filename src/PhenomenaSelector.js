@@ -253,7 +253,7 @@ class PhenomenaSelectorLegacy extends PureComponent {
     const groupId = (group && typeof group === 'object' && group.id) || group || 0
     const groups = selectedGroup.value === ALL_GROUP_VALUE || selectedGroup.value === PUBLIC_GROUP_VALUE ? [PUBLIC_GROUP_VALUE] : []
 
-    if (selectedGroup.value === ALL_GROUP_VALUE && groupId) {
+    if (selectedGroup.value === ALL_GROUP_VALUE || selectedGroup.value === PUBLIC_GROUP_VALUE && groupId) {
       groups.push(groupId)
     } else if (selectedGroup.value > 0) {
       groups.push(selectedGroup.value)
@@ -262,7 +262,7 @@ class PhenomenaSelectorLegacy extends PureComponent {
     let language = get(languageObj, 'value', null)
 
     if (language === 'all') {
-        language = null
+      language = null
     }
 
     let newState = {}
@@ -495,7 +495,6 @@ class PhenomenaSelectorLegacy extends PureComponent {
 
 const PhenomenaSelector = props => {
   const { group } = props
-
   const { phenomenonTypesById, loading, error } = usePhenomenonTypes(isObject(group) ? group.id : group)
 
   if (loading) {
