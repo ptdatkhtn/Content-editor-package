@@ -174,11 +174,6 @@ export const PhenomenonEditForm = (
             onSubmit={async (values, {setSubmitting}) => {
                 try {
                     const originalNewsFeeds = getValue("newsFeeds", [])
-                    const duplicatedNewsFeeds = []
-                  if (!values.uuid && originalNewsFeeds.length > 0) {
-                    // Duplicating phenomenon. Duplicated feeds
-                    originalNewsFeeds.forEach(({ id }) => duplicatedNewsFeeds.push({ id }))
-                  }
                     const addedNewsFeeds = differenceBy(
                         values.newsFeeds,
                         originalNewsFeeds
@@ -192,11 +187,7 @@ export const PhenomenonEditForm = (
                         ...values
                     }
 
-                    await onSubmit(transformFromLegacy(phenomenonInput), {
-                      addedNewsFeeds,
-                      deletedNewsFeeds,
-                      duplicatedNewsFeeds
-                    })
+                    await onSubmit(transformFromLegacy(phenomenonInput), {addedNewsFeeds, deletedNewsFeeds})
                 } catch (error) {
                     alert(error.message)
                 }
