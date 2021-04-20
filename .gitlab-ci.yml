@@ -13,11 +13,12 @@ test:
 deploy:
   stage: deploy
   script:
-    - >
+    - |
       echo $'registry=https://registry.yarnpkg.com
       //npm.sangre.dev/:_authToken='"$NPM_TOKEN"'
       @sangre-fp:registry=https://npm.sangre.dev
-      ' > ~/.npmrc
+      ' > /root/.npmrc
+    - npm i -g microbundle@next --unsafe
     - npm publish
   only:
     - tags
