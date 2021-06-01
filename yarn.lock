@@ -1067,9 +1067,9 @@
     lodash "^4.17.15"
 
 "@sangre-fp/ui@^2.0.23":
-  version "2.0.25"
-  resolved "https://npm.sangre.dev/@sangre-fp%2fui/-/ui-2.0.25.tgz#904df6b894297b31e58e7bb115370cbc23afc4f8"
-  integrity sha512-XE30PmHWDl7iu+rJGrV0OBILGIqI2HCJLYBvW3lp41QGxMH88AKMNQ8ygPFR7VKXhamg95jRdirSpAdr8XtxGQ==
+  version "2.0.26"
+  resolved "https://npm.sangre.dev/@sangre-fp%2fui/-/ui-2.0.26.tgz#e239e53d3d03f097e1e762acac743ed3b75bdd95"
+  integrity sha512-6KpFT+ukkLWvVkPeFViAC/02XhBthd/+MjWooAYNvrnU/cHStLa+j/AOPljB+OqINwBJPJBMDWnu9axTR3KAbA==
   dependencies:
     "@mdi/font" "^5.0.45"
     "@sangre-fp/i18n" "^2.0.15"
