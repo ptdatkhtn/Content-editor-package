@@ -1,14 +1,7 @@
 image: node:14-alpine
 
 stages:
-  - test
   - deploy
-
-test:
-  stage: test
-  script:
-    - yarn
-    - yarn test
 
 deploy:
   stage: deploy
