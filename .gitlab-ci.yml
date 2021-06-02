@@ -12,6 +12,7 @@ deploy:
       @sangre-fp:registry=https://npm.sangre.dev
       ' > /root/.npmrc
     - npm i -g microbundle@next --unsafe
+    - yarn build
     - npm publish
   only:
     - tags
