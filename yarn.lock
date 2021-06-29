@@ -1031,14 +1031,6 @@
     estree-walker "^1.0.1"
     picomatch "^2.2.2"
 
-"@sangre-fp/connectors@^1.5.5":
-  version "1.6.1"
-  resolved "https://npm.sangre.dev/@sangre-fp%2fconnectors/-/connectors-1.6.1.tgz#fb16b5b74a688de54aeb8942c6296ce084ce9d39"
-  integrity sha512-09E7W2SsqM9mjuIk/zWmIK2gPKB86mugwXEYpALFEOOtorDV28fvhk3e8UZ1RV5l2ctWQFG4RuuHwsOcQHygqw==
-  dependencies:
-    axios "^0.19.1"
-    lodash-es "^4.17.15"
-
 "@sangre-fp/connectors@^2.1.0":
   version "2.1.0"
   resolved "https://npm.sangre.dev/@sangre-fp%2fconnectors/-/connectors-2.1.0.tgz#57f420e0fceb33d848534056b7c1bbe812d39238"
@@ -1060,11 +1052,11 @@
     use-debounce "^3.3.0"
 
 "@sangre-fp/hooks@^1.0.9":
-  version "1.0.12"
-  resolved "https://npm.sangre.dev/@sangre-fp%2fhooks/-/hooks-1.0.12.tgz#0bfd4168da77a9960be959b9666dcf0209b2422d"
-  integrity sha512-6KXGjbOYphfBhVjGwt5CP7txsHnLPNoL8AuMzLJB2UhKSrdi1k0TKGaYTZCtDFBOi6Stpdg4ao27DuXlFz4zng==
+  version "1.0.14"
+  resolved "https://npm.sangre.dev/@sangre-fp%2fhooks/-/hooks-1.0.14.tgz#744ff325624dcb90f7731ae5f23ef657c4602918"
+  integrity sha512-n3oD+iyidJmU8ZaZZ6d0F0soq0yEJQsjKDdh0WdX8zKOF4jZ/w3EY2KIqQN6OE4afJ3+8pQ9FWHheYUBeuGNzA==
   dependencies:
-    "@sangre-fp/connectors" "^1.5.5"
+    "@sangre-fp/connectors" "^2.1.0"
     lodash-es "^4.17.15"
 
 "@sangre-fp/i18n@^2.0.15":
