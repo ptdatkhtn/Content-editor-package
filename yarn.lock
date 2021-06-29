@@ -1039,6 +1039,14 @@
     axios "^0.19.1"
     lodash-es "^4.17.15"
 
+"@sangre-fp/connectors@^2.1.0":
+  version "2.1.0"
+  resolved "https://npm.sangre.dev/@sangre-fp%2fconnectors/-/connectors-2.1.0.tgz#57f420e0fceb33d848534056b7c1bbe812d39238"
+  integrity sha512-JE8l4Uh28UfBFzsX5Avgz7stVrq1oUJeBv7p0HbgOkAgSSK8WJ+2RPvgopeZKU85CEqAPTJPnTjxm9WAwYX0eA==
+  dependencies:
+    axios "^0.19.1"
+    lodash-es "^4.17.15"
+
 "@sangre-fp/content-filters@^1.0.22":
   version "1.0.22"
   resolved "https://npm.sangre.dev/@sangre-fp%2fcontent-filters/-/content-filters-1.0.22.tgz#d35bddb66e017bc332e4c4f59cd543cf6cac2221"
