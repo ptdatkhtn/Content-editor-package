@@ -146,7 +146,7 @@ export default class PhenomenaTimingEditor extends Component {
         <div className='w-100 d-flex'>
           {_.map(RANGES, this.renderRangeButton)}
         </div>
-        <button className='btn btn-lg btn-plain-gray pl-0' onClick={this.clearValue}>CLEAR</button>
+        <button className='btn btn-lg btn-plain-gray pl-0' onClick={this.clearValue}>{requestTranslation('clear').toUpperCase()}</button>
         <RangeStyles />
       </div>
     )
