@@ -1,6 +1,6 @@
 {
   "name": "@sangre-fp/content-editor",
-  "version": "2.1.14",
+  "version": "2.1.15",
   "main": "dist/index.umd.js",
   "module": "dist/index.modern.mjs",
   "license": "UNLICENSED",
