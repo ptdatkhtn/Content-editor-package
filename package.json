@@ -6,7 +6,7 @@
   "license": "UNLICENSED",
   "dependencies": {
     "@sangre-fp/connectors": "^2.1.0",
-    "@sangre-fp/content-filters": "^1.0.22",
+    "@sangre-fp/content-filters": "^1.0.36",
     "@sangre-fp/hooks": "^1.0.9",
     "@sangre-fp/i18n": "^2.1.5",
     "@sangre-fp/ui": "^2.0.23",

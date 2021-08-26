@@ -1039,14 +1039,14 @@
     axios "^0.19.1"
     lodash-es "^4.17.15"
 
-"@sangre-fp/content-filters@^1.0.22":
-  version "1.0.22"
-  resolved "https://npm.sangre.dev/@sangre-fp%2fcontent-filters/-/content-filters-1.0.22.tgz#d35bddb66e017bc332e4c4f59cd543cf6cac2221"
-  integrity sha512-40eOoF8uTnGS4/XIqTfMvT/oK9Yf1VHIPtbNaYzKOQUE8EBKwCiHfBAJ3AqoTruNUtF9E5CnQeaaRQsDdgtarw==
+"@sangre-fp/content-filters@^1.0.36":
+  version "1.0.36"
+  resolved "https://npm.sangre.dev/@sangre-fp%2fcontent-filters/-/content-filters-1.0.36.tgz#9a029127b605ec6cf32dcc9348b7dcca91e3be50"
+  integrity sha512-eqxCZUhgzfxxiYkiIOrNhwjrkE/kUeOA26h7eg2sKbyF269tB4QntSeeKpKz5y+l8bajX8dlQW+bT6rxys3nfA==
   dependencies:
     "@sangre-fp/hooks" "^1.0.9"
-    "@sangre-fp/i18n" "^2.0.15"
-    "@sangre-fp/ui" "^2.0.23"
+    "@sangre-fp/i18n" "^2.1.7"
+    "@sangre-fp/ui" "^2.0.26"
     lodash-es "^4.17.15"
     styled-components "^4.4.1"
     use-debounce "^3.3.0"
@@ -1066,10 +1066,10 @@
   dependencies:
     lodash "^4.17.15"
 
-"@sangre-fp/i18n@^2.1.4":
-  version "2.1.4"
-  resolved "https://npm.sangre.dev/@sangre-fp%2fi18n/-/i18n-2.1.4.tgz#8008efbbab7b4ceb2a1e27bae8087177e5c32d27"
-  integrity sha512-6/ls2P9gH2g1YY36bcbS43cLTcZHgp9sVsk5UqjDQI/W9KTHTFBWykZFqf2K5TXkoj2ohAnnGo8Ip8Tob+q1zQ==
+"@sangre-fp/i18n@^2.1.5", "@sangre-fp/i18n@^2.1.7":
+  version "2.1.7"
+  resolved "https://npm.sangre.dev/@sangre-fp%2fi18n/-/i18n-2.1.7.tgz#8c5331af5513ed81d474e9bc803db2fc7e7ea3b4"
+  integrity sha512-xdbZ05ly135L0nNkz7LMAT102maTB48BFhExjufnRi6EVVrqKa9xGLPo9L/SubexmxmpK3uJ28JdS2oBty2n7w==
   dependencies:
     lodash "^4.17.15"
 
@@ -1077,6 +1077,21 @@
   version "2.0.26"
   resolved "https://npm.sangre.dev/@sangre-fp%2fui/-/ui-2.0.26.tgz#e239e53d3d03f097e1e762acac743ed3b75bdd95"
   integrity sha512-6KpFT+ukkLWvVkPeFViAC/02XhBthd/+MjWooAYNvrnU/cHStLa+j/AOPljB+OqINwBJPJBMDWnu9axTR3KAbA==
+  dependencies:
+    "@mdi/font" "^5.0.45"
+    "@sangre-fp/i18n" "^2.0.15"
+    classnames "^2.2.6"
+    concurrently "^5.0.1"
+    lodash "^4.17.15"
+    react-loading "^2.0.3"
+    react-modal "^3.11.1"
+    react-select "^3.1.0"
+    styled-components "^4.4.1"
+
+"@sangre-fp/ui@^2.0.26":
+  version "2.0.28"
+  resolved "https://npm.sangre.dev/@sangre-fp%2fui/-/ui-2.0.28.tgz#ccea095515a5762e11519f14732593b19257e702"
+  integrity sha512-qdU8lfOPlENrTj1nYUy/s5eNtrjb9NUR4tP+ASpyxA8J4PZ1c2yqEdKdKSy/HLemZZNXuMtiNZsEKePoZks3IA==
   dependencies:
     "@mdi/font" "^5.0.45"
     "@sangre-fp/i18n" "^2.0.15"
