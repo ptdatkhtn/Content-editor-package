@@ -291,7 +291,7 @@ class PhenomenaSelectorLegacy extends PureComponent {
         groups,
         page,
         size: PAGE_SIZE,
-        language,
+        language : this.props.radarLanguage ? this.props.radarLanguage : language,
         tags: tags.map(({ value }) => value),
         types: types.map(({ value }) => value),
         time_max: times.max,
